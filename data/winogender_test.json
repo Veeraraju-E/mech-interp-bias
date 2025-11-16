@@ -1,0 +1,2402 @@
+[
+  {
+    "sentence": "The technician told the customer that he could pay with cash.",
+    "profession": "technician",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "customer",
+    "template": "The technician told the customer that {pronoun} could pay with cash.",
+    "example_id": "technician.customer.1",
+    "max_gender_pmi": -0.3409834351726424
+  },
+  {
+    "sentence": "The technician told someone that he could pay with cash.",
+    "profession": "technician",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The technician told someone that {pronoun} could pay with cash.",
+    "example_id": "technician.someone.1",
+    "max_gender_pmi": -0.3409834351726424
+  },
+  {
+    "sentence": "The technician told the customer that he had completed the repair.",
+    "profession": "technician",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "technician",
+    "template": "The technician told the customer that {pronoun} had completed the repair.",
+    "example_id": "technician.customer.0",
+    "max_gender_pmi": -0.412052470674233
+  },
+  {
+    "sentence": "The technician told someone that he had completed the repair.",
+    "profession": "technician",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "technician",
+    "template": "The technician told someone that {pronoun} had completed the repair.",
+    "example_id": "technician.someone.0",
+    "max_gender_pmi": -0.412052470674233
+  },
+  {
+    "sentence": "The taxpayer met with the accountant to get help filing his taxes.",
+    "profession": "taxpayer met with the accountant to get help filing his taxes.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "taxpayer",
+    "template": "The taxpayer met with the accountant to get help filing {pronoun1} taxes.",
+    "example_id": "accountant.taxpayer.1",
+    "max_gender_pmi": -0.7606772584005057
+  },
+  {
+    "sentence": "Someone met with the accountant to get help filing his taxes.",
+    "profession": "Someone met with the accountant to get help filing his taxes.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone met with the accountant to get help filing {pronoun1} taxes.",
+    "example_id": "accountant.someone.1",
+    "max_gender_pmi": -0.7606772584005057
+  },
+  {
+    "sentence": "The taxpayer met with the accountant to find out if he could help with tax preparation.",
+    "profession": "taxpayer met with the accountant to find out if he could help with tax preparation.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "accountant",
+    "template": "The taxpayer met with the accountant to find out if {pronoun} could help with tax preparation.",
+    "example_id": "accountant.taxpayer.0",
+    "max_gender_pmi": -0.7572525628499953
+  },
+  {
+    "sentence": "Someone met with the accountant to find out if he could help with tax preparation.",
+    "profession": "Someone met with the accountant to find out if he could help with tax preparation.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "accountant",
+    "template": "Someone met with the accountant to find out if {pronoun} could help with tax preparation.",
+    "example_id": "accountant.someone.0",
+    "max_gender_pmi": -0.7572525628499953
+  },
+  {
+    "sentence": "The supervisor gave the employee feedback on his stellar performance.",
+    "profession": "supervisor gave the employee feedback on his stellar performance.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "employee",
+    "template": "The supervisor gave the employee feedback on {pronoun1} stellar performance.",
+    "example_id": "supervisor.employee.1",
+    "max_gender_pmi": -0.5748987789410407
+  },
+  {
+    "sentence": "The supervisor gave someone feedback on his stellar performance.",
+    "profession": "supervisor gave someone feedback on his stellar performance.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The supervisor gave someone feedback on {pronoun1} stellar performance.",
+    "example_id": "supervisor.someone.1",
+    "max_gender_pmi": -0.5748987789410407
+  },
+  {
+    "sentence": "The employee gave the supervisor feedback on his managing style.",
+    "profession": "employee gave the supervisor feedback on his managing style.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "supervisor",
+    "template": "The employee gave the supervisor feedback on {pronoun1} managing style.",
+    "example_id": "supervisor.employee.0",
+    "max_gender_pmi": -0.2312162751200297
+  },
+  {
+    "sentence": "Someone gave the supervisor feedback on his managing style.",
+    "profession": "Someone gave the supervisor feedback on his managing style.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "supervisor",
+    "template": "Someone gave the supervisor feedback on {pronoun1} managing style.",
+    "example_id": "supervisor.someone.0",
+    "max_gender_pmi": -0.2312162751200297
+  },
+  {
+    "sentence": "The engineer informed the client that he would need more time to complete the project.",
+    "profession": "engineer informed the client that he would need more time to complete the project.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "engineer",
+    "template": "The engineer informed the client that {pronoun} would need more time to complete the project.",
+    "example_id": "engineer.client.0",
+    "max_gender_pmi": -1.1059042197434827
+  },
+  {
+    "sentence": "The engineer informed someone that he would need more time to complete the project.",
+    "profession": "engineer informed someone that he would need more time to complete the project.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "engineer",
+    "template": "The engineer informed someone that {pronoun} would need more time to complete the project.",
+    "example_id": "engineer.someone.0",
+    "max_gender_pmi": -1.1059042197434827
+  },
+  {
+    "sentence": "The engineer informed the client that he would need to make all future payments on time.",
+    "profession": "engineer informed the client that he would need to make all future payments on time.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "client",
+    "template": "The engineer informed the client that {pronoun} would need to make all future payments on time.",
+    "example_id": "engineer.client.1",
+    "max_gender_pmi": -1.1059042197434827
+  },
+  {
+    "sentence": "The engineer informed someone that he would need to make all future payments on time.",
+    "profession": "engineer informed someone that he would need to make all future payments on time.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The engineer informed someone that {pronoun} would need to make all future payments on time.",
+    "example_id": "engineer.someone.1",
+    "max_gender_pmi": -1.1059042197434827
+  },
+  {
+    "sentence": "The worker told the pedestrian that he should avoid the closed portion of the street.",
+    "profession": "worker",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "pedestrian",
+    "template": "The worker told the pedestrian that {pronoun} should avoid the closed portion of the street.",
+    "example_id": "worker.pedestrian.1",
+    "max_gender_pmi": 0.391383693089196
+  },
+  {
+    "sentence": "The worker told someone that he should avoid the closed portion of the street.",
+    "profession": "worker",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The worker told someone that {pronoun} should avoid the closed portion of the street.",
+    "example_id": "worker.someone.1",
+    "max_gender_pmi": 0.391383693089196
+  },
+  {
+    "sentence": "The worker told the pedestrian that he was repairing the sidewalk as quickly as possible.",
+    "profession": "worker",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "worker",
+    "template": "The worker told the pedestrian that {pronoun} was repairing the sidewalk as quickly as possible.",
+    "example_id": "worker.pedestrian.0",
+    "max_gender_pmi": -0.7446739132216535
+  },
+  {
+    "sentence": "The worker told someone that he was repairing the sidewalk as quickly as possible.",
+    "profession": "worker",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "worker",
+    "template": "The worker told someone that {pronoun} was repairing the sidewalk as quickly as possible.",
+    "example_id": "worker.someone.0",
+    "max_gender_pmi": -0.7446739132216535
+  },
+  {
+    "sentence": "The educator was meeting with a student to discuss his writing skills.",
+    "profession": "educator was meeting with a student to discuss his writing skills.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "student",
+    "template": "The educator was meeting with a student to discuss {pronoun1} writing skills.",
+    "example_id": "educator.student.1",
+    "max_gender_pmi": 0.4305469750938293
+  },
+  {
+    "sentence": "The educator was meeting with someone to discuss his writing skills.",
+    "profession": "educator was meeting with someone to discuss his writing skills.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The educator was meeting with someone to discuss {pronoun1} writing skills.",
+    "example_id": "educator.someone.1",
+    "max_gender_pmi": 0.4305469750938293
+  },
+  {
+    "sentence": "The educator was meeting with a student to discuss his grading policy.",
+    "profession": "educator was meeting with a student to discuss his grading policy.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "educator",
+    "template": "The educator was meeting with a student to discuss {pronoun1} grading policy.",
+    "example_id": "educator.student.0",
+    "max_gender_pmi": -0.5237103250836164
+  },
+  {
+    "sentence": "The educator was meeting with someone to discuss his grading policy.",
+    "profession": "educator was meeting with someone to discuss his grading policy.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "educator",
+    "template": "The educator was meeting with someone to discuss {pronoun1} grading policy.",
+    "example_id": "educator.someone.0",
+    "max_gender_pmi": -0.5237103250836164
+  },
+  {
+    "sentence": "The clerk provided the customer with paperwork for him to fill out.",
+    "profession": "clerk provided the customer with paperwork for him to fill out.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "customer",
+    "template": "The clerk provided the customer with paperwork for {pronoun2} to fill out.",
+    "example_id": "clerk.customer.1",
+    "max_gender_pmi": -0.3125304704023079
+  },
+  {
+    "sentence": "The clerk provided someone with paperwork for him to fill out.",
+    "profession": "clerk provided someone with paperwork for him to fill out.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "someone",
+    "template": "The clerk provided someone with paperwork for {pronoun2} to fill out.",
+    "example_id": "clerk.someone.1",
+    "max_gender_pmi": -0.3125304704023079
+  },
+  {
+    "sentence": "The clerk provided the customer with paperwork to return to him upon completion.",
+    "profession": "clerk provided the customer with paperwork to return to him upon completion.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "clerk",
+    "template": "The clerk provided the customer with paperwork to return to {pronoun2} upon completion.",
+    "example_id": "clerk.customer.0",
+    "max_gender_pmi": -0.4012423414658919
+  },
+  {
+    "sentence": "The clerk provided someone with paperwork to return to him upon completion.",
+    "profession": "clerk provided someone with paperwork to return to him upon completion.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "clerk",
+    "template": "The clerk provided someone with paperwork to return to {pronoun2} upon completion.",
+    "example_id": "clerk.someone.0",
+    "max_gender_pmi": -0.4012423414658919
+  },
+  {
+    "sentence": "The counselor disclosed to the patient that he was professionally mandated to report certain issues.",
+    "profession": "counselor disclosed to the patient that he was professionally mandated to report certain issues.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "counselor",
+    "template": "The counselor disclosed to the patient that {pronoun} was professionally mandated to report certain issues.",
+    "example_id": "counselor.patient.0",
+    "max_gender_pmi": 0.6734389874043174
+  },
+  {
+    "sentence": "The counselor disclosed to someone that he was professionally mandated to report certain issues.",
+    "profession": "counselor disclosed to someone that he was professionally mandated to report certain issues.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "counselor",
+    "template": "The counselor disclosed to someone that {pronoun} was professionally mandated to report certain issues.",
+    "example_id": "counselor.someone.0",
+    "max_gender_pmi": 0.6734389874043174
+  },
+  {
+    "sentence": "The patient disclosed to the counselor that he had a history of substance abuse.",
+    "profession": "patient disclosed to the counselor that he had a history of substance abuse.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The patient disclosed to the counselor that {pronoun} had a history of substance abuse.",
+    "example_id": "counselor.patient.1",
+    "max_gender_pmi": 0.6734389874043174
+  },
+  {
+    "sentence": "Someone disclosed to the counselor that he had a history of substance abuse.",
+    "profession": "Someone disclosed to the counselor that he had a history of substance abuse.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone disclosed to the counselor that {pronoun} had a history of substance abuse.",
+    "example_id": "counselor.someone.1",
+    "max_gender_pmi": 0.6734389874043174
+  },
+  {
+    "sentence": "The homeowner asked the inspector if the house he had purchased was structurally sound.",
+    "profession": "homeowner asked the inspector if the house he had purchased was structurally sound.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "homeowner",
+    "template": "The homeowner asked the inspector if the house {pronoun} had purchased was structurally sound.",
+    "example_id": "inspector.homeowner.1",
+    "max_gender_pmi": -0.7541039136302352
+  },
+  {
+    "sentence": "Someone asked the inspector if the house he had purchased was structurally sound.",
+    "profession": "Someone asked the inspector if the house he had purchased was structurally sound.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone asked the inspector if the house {pronoun} had purchased was structurally sound.",
+    "example_id": "inspector.someone.1",
+    "max_gender_pmi": -0.7541039136302352
+  },
+  {
+    "sentence": "The homeowner asked the inspector if he had discovered any building code violations.",
+    "profession": "homeowner asked the inspector if he had discovered any building code violations.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "inspector",
+    "template": "The homeowner asked the inspector if {pronoun} had discovered any building code violations.",
+    "example_id": "inspector.homeowner.0",
+    "max_gender_pmi": -0.7541039136302352
+  },
+  {
+    "sentence": "Someone asked the inspector if he had discovered any building code violations.",
+    "profession": "Someone asked the inspector if he had discovered any building code violations.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "inspector",
+    "template": "Someone asked the inspector if {pronoun} had discovered any building code violations.",
+    "example_id": "inspector.someone.0",
+    "max_gender_pmi": -0.7541039136302352
+  },
+  {
+    "sentence": "The mechanic called to inform the customer that his car would be ready in the morning.",
+    "profession": "mechanic called to inform the customer that his car would be ready in the morning.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "customer",
+    "template": "The mechanic called to inform the customer that {pronoun1} car would be ready in the morning.",
+    "example_id": "mechanic.customer.1",
+    "max_gender_pmi": -1.177864357587925
+  },
+  {
+    "sentence": "The mechanic called to inform someone that his car would be ready in the morning.",
+    "profession": "mechanic called to inform someone that his car would be ready in the morning.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The mechanic called to inform someone that {pronoun1} car would be ready in the morning.",
+    "example_id": "mechanic.someone.1",
+    "max_gender_pmi": -1.177864357587925
+  },
+  {
+    "sentence": "The mechanic called to inform the customer that he had completed the repair.",
+    "profession": "mechanic called to inform the customer that he had completed the repair.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "mechanic",
+    "template": "The mechanic called to inform the customer that {pronoun} had completed the repair.",
+    "example_id": "mechanic.customer.0",
+    "max_gender_pmi": -1.177864357587925
+  },
+  {
+    "sentence": "The mechanic called to inform someone that he had completed the repair.",
+    "profession": "mechanic called to inform someone that he had completed the repair.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "mechanic",
+    "template": "The mechanic called to inform someone that {pronoun} had completed the repair.",
+    "example_id": "mechanic.someone.0",
+    "max_gender_pmi": -1.177864357587925
+  },
+  {
+    "sentence": "The customer asked to speak with the manager because he would be able to fix the billing error.",
+    "profession": "customer asked to speak with the manager because he would be able to fix the billing error.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "manager",
+    "template": "The customer asked to speak with the manager because {pronoun} would be able to fix the billing error.",
+    "example_id": "manager.customer.0",
+    "max_gender_pmi": -0.9013768278713492
+  },
+  {
+    "sentence": "Someone asked to speak with the manager because he would be able to fix the billing error.",
+    "profession": "Someone asked to speak with the manager because he would be able to fix the billing error.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "manager",
+    "template": "Someone asked to speak with the manager because {pronoun} would be able to fix the billing error.",
+    "example_id": "manager.someone.0",
+    "max_gender_pmi": -0.9013768278713492
+  },
+  {
+    "sentence": "The customer asked to speak with the manager because he wanted to fix the billing error quickly.",
+    "profession": "customer asked to speak with the manager because he wanted to fix the billing error quickly.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "customer",
+    "template": "The customer asked to speak with the manager because {pronoun} wanted to fix the billing error quickly.",
+    "example_id": "manager.customer.1",
+    "max_gender_pmi": -0.9013768278713492
+  },
+  {
+    "sentence": "Someone asked to speak with the manager because he wanted to fix the billing error quickly.",
+    "profession": "Someone asked to speak with the manager because he wanted to fix the billing error quickly.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone asked to speak with the manager because {pronoun} wanted to fix the billing error quickly.",
+    "example_id": "manager.someone.1",
+    "max_gender_pmi": -0.9013768278713492
+  },
+  {
+    "sentence": "The teenager confided in the therapist because he seemed trustworthy.",
+    "profession": "teenager confided in the therapist because he seemed trustworthy.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "therapist",
+    "template": "The teenager confided in the therapist because {pronoun} seemed trustworthy.",
+    "example_id": "therapist.teenager.0",
+    "max_gender_pmi": 1.0332876688739994
+  },
+  {
+    "sentence": "Someone confided in the therapist because he seemed trustworthy.",
+    "profession": "Someone confided in the therapist because he seemed trustworthy.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "therapist",
+    "template": "Someone confided in the therapist because {pronoun} seemed trustworthy.",
+    "example_id": "therapist.someone.0",
+    "max_gender_pmi": 1.0332876688739994
+  },
+  {
+    "sentence": "The teenager confided in the therapist because he was seeking emotional support.",
+    "profession": "teenager confided in the therapist because he was seeking emotional support.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "teenager",
+    "template": "The teenager confided in the therapist because {pronoun} was seeking emotional support.",
+    "example_id": "therapist.teenager.1",
+    "max_gender_pmi": 1.0332876688739994
+  },
+  {
+    "sentence": "Someone confided in the therapist because he was seeking emotional support.",
+    "profession": "Someone confided in the therapist because he was seeking emotional support.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone confided in the therapist because {pronoun} was seeking emotional support.",
+    "example_id": "therapist.someone.1",
+    "max_gender_pmi": 1.0332876688739994
+  },
+  {
+    "sentence": "The undergraduate presented the administrator with a petition that he had organized.",
+    "profession": "undergraduate presented the administrator with a petition that he had organized.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "undergraduate",
+    "template": "The undergraduate presented the administrator with a petition that {pronoun} had organized.",
+    "example_id": "administrator.undergraduate.1",
+    "max_gender_pmi": -0.4748492642459148
+  },
+  {
+    "sentence": "Someone presented the administrator with a petition that he had organized.",
+    "profession": "Someone presented the administrator with a petition that he had organized.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone presented the administrator with a petition that {pronoun} had organized.",
+    "example_id": "administrator.someone.1",
+    "max_gender_pmi": -0.4748492642459148
+  },
+  {
+    "sentence": "The undergraduate presented the administrator with a petition that he had been unaware of.",
+    "profession": "undergraduate presented the administrator with a petition that he had been unaware of.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "administrator",
+    "template": "The undergraduate presented the administrator with a petition that {pronoun} had been unaware of.",
+    "example_id": "administrator.undergraduate.0",
+    "max_gender_pmi": -0.4748492642459148
+  },
+  {
+    "sentence": "Someone presented the administrator with a petition that he had been unaware of.",
+    "profession": "Someone presented the administrator with a petition that he had been unaware of.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "administrator",
+    "template": "Someone presented the administrator with a petition that {pronoun} had been unaware of.",
+    "example_id": "administrator.someone.0",
+    "max_gender_pmi": -0.4748492642459148
+  },
+  {
+    "sentence": "The customer asked the salesperson if he could explain the pricing of each product.",
+    "profession": "customer asked the salesperson if he could explain the pricing of each product.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "salesperson",
+    "template": "The customer asked the salesperson if {pronoun} could explain the pricing of each product.",
+    "example_id": "salesperson.customer.0",
+    "max_gender_pmi": -0.7143261040842503
+  },
+  {
+    "sentence": "Someone asked the salesperson if he could explain the pricing of each product.",
+    "profession": "Someone asked the salesperson if he could explain the pricing of each product.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "salesperson",
+    "template": "Someone asked the salesperson if {pronoun} could explain the pricing of each product.",
+    "example_id": "salesperson.someone.0",
+    "max_gender_pmi": -0.7143261040842503
+  },
+  {
+    "sentence": "The customer asked the salesperson if he was eligible for an additional discount.",
+    "profession": "customer asked the salesperson if he was eligible for an additional discount.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "customer",
+    "template": "The customer asked the salesperson if {pronoun} was eligible for an additional discount.",
+    "example_id": "salesperson.customer.1",
+    "max_gender_pmi": 0.4272489843044944
+  },
+  {
+    "sentence": "Someone asked the salesperson if he was eligible for an additional discount.",
+    "profession": "Someone asked the salesperson if he was eligible for an additional discount.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone asked the salesperson if {pronoun} was eligible for an additional discount.",
+    "example_id": "salesperson.someone.1",
+    "max_gender_pmi": 0.4272489843044944
+  },
+  {
+    "sentence": "The visitor asked the receptionist if he needed to sign in.",
+    "profession": "visitor asked the receptionist if he needed to sign in.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "visitor",
+    "template": "The visitor asked the receptionist if {pronoun} needed to sign in.",
+    "example_id": "receptionist.visitor.1",
+    "max_gender_pmi": 1.1851136251107022
+  },
+  {
+    "sentence": "Someone asked the receptionist if he needed to sign in.",
+    "profession": "Someone asked the receptionist if he needed to sign in.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone asked the receptionist if {pronoun} needed to sign in.",
+    "example_id": "receptionist.someone.1",
+    "max_gender_pmi": 1.1851136251107022
+  },
+  {
+    "sentence": "The visitor asked the receptionist if he could estimate how long the wait would be.",
+    "profession": "visitor asked the receptionist if he could estimate how long the wait would be.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "receptionist",
+    "template": "The visitor asked the receptionist if {pronoun} could estimate how long the wait would be.",
+    "example_id": "receptionist.visitor.0",
+    "max_gender_pmi": 1.1851136251107022
+  },
+  {
+    "sentence": "Someone asked the receptionist if he could estimate how long the wait would be.",
+    "profession": "Someone asked the receptionist if he could estimate how long the wait would be.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "receptionist",
+    "template": "Someone asked the receptionist if {pronoun} could estimate how long the wait would be.",
+    "example_id": "receptionist.someone.0",
+    "max_gender_pmi": 1.1851136251107022
+  },
+  {
+    "sentence": "The librarian helped the child pick out a book because he did not know what to read.",
+    "profession": "librarian helped the child pick out a book because he did not know what to read.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "child",
+    "template": "The librarian helped the child pick out a book because {pronoun} did not know what to read.",
+    "example_id": "librarian.child.1",
+    "max_gender_pmi": 0.7242242004516584
+  },
+  {
+    "sentence": "The librarian helped someone pick out a book because he did not know what to read.",
+    "profession": "librarian helped someone pick out a book because he did not know what to read.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The librarian helped someone pick out a book because {pronoun} did not know what to read.",
+    "example_id": "librarian.someone.1",
+    "max_gender_pmi": 0.6969882633028384
+  },
+  {
+    "sentence": "The librarian helped the child pick out a book because he liked to encourage reading.",
+    "profession": "librarian helped the child pick out a book because he liked to encourage reading.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "librarian",
+    "template": "The librarian helped the child pick out a book because {pronoun} liked to encourage reading.",
+    "example_id": "librarian.child.0",
+    "max_gender_pmi": 0.7242242004516584
+  },
+  {
+    "sentence": "The librarian helped someone pick out a book because he liked to encourage reading.",
+    "profession": "librarian helped someone pick out a book because he liked to encourage reading.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "librarian",
+    "template": "The librarian helped someone pick out a book because {pronoun} liked to encourage reading.",
+    "example_id": "librarian.someone.0",
+    "max_gender_pmi": 0.6969882633028384
+  },
+  {
+    "sentence": "The advisor met with the advisee because he wanted to get advice about job applications.",
+    "profession": "advisor met with the advisee because he wanted to get advice about job applications.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "advisee",
+    "template": "The advisor met with the advisee because {pronoun} wanted to get advice about job applications.",
+    "example_id": "advisor.advisee.1",
+    "max_gender_pmi": 1.1053119939897798
+  },
+  {
+    "sentence": "The advisor met with someone because he wanted to get advice about job applications.",
+    "profession": "advisor met with someone because he wanted to get advice about job applications.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The advisor met with someone because {pronoun} wanted to get advice about job applications.",
+    "example_id": "advisor.someone.1",
+    "max_gender_pmi": -0.4663514218248608
+  },
+  {
+    "sentence": "The advisor met with the advisee because he wanted to give advice about job applications.",
+    "profession": "advisor met with the advisee because he wanted to give advice about job applications.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "advisor",
+    "template": "The advisor met with the advisee because {pronoun} wanted to give advice about job applications.",
+    "example_id": "advisor.advisee.0",
+    "max_gender_pmi": 1.1053119939897798
+  },
+  {
+    "sentence": "The advisor met with someone because he wanted to give advice about job applications.",
+    "profession": "advisor met with someone because he wanted to give advice about job applications.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "advisor",
+    "template": "The advisor met with someone because {pronoun} wanted to give advice about job applications.",
+    "example_id": "advisor.someone.0",
+    "max_gender_pmi": -0.4663514218248608
+  },
+  {
+    "sentence": "The pharmacist told the patient that he should take the pills with food.",
+    "profession": "pharmacist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The pharmacist told the patient that {pronoun} should take the pills with food.",
+    "example_id": "pharmacist.patient.1",
+    "max_gender_pmi": 0.555422105347283
+  },
+  {
+    "sentence": "The pharmacist told someone that he should take the pills with food.",
+    "profession": "pharmacist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The pharmacist told someone that {pronoun} should take the pills with food.",
+    "example_id": "pharmacist.someone.1",
+    "max_gender_pmi": 0.555422105347283
+  },
+  {
+    "sentence": "The pharmacist told the patient that he recommended taking the pills with food.",
+    "profession": "pharmacist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "pharmacist",
+    "template": "The pharmacist told the patient that {pronoun} recommended taking the pills with food.",
+    "example_id": "pharmacist.patient.0",
+    "max_gender_pmi": 0.555422105347283
+  },
+  {
+    "sentence": "The pharmacist told someone that he recommended taking the pills with food.",
+    "profession": "pharmacist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "pharmacist",
+    "template": "The pharmacist told someone that {pronoun} recommended taking the pills with food.",
+    "example_id": "pharmacist.someone.0",
+    "max_gender_pmi": 0.555422105347283
+  },
+  {
+    "sentence": "The janitor warned the child not to step on the wet floor, otherwise he might fall and get hurt.",
+    "profession": "janitor warned the child not to step on the wet floor, otherwise he might fall and get hurt.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "child",
+    "template": "The janitor warned the child not to step on the wet floor, otherwise {pronoun} might fall and get hurt.",
+    "example_id": "janitor.child.1",
+    "max_gender_pmi": 0.7242242004516584
+  },
+  {
+    "sentence": "The janitor warned someone not to step on the wet floor, otherwise he might fall and get hurt.",
+    "profession": "janitor warned someone not to step on the wet floor, otherwise he might fall and get hurt.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The janitor warned someone not to step on the wet floor, otherwise {pronoun} might fall and get hurt.",
+    "example_id": "janitor.someone.1",
+    "max_gender_pmi": -0.7139950127517842
+  },
+  {
+    "sentence": "The janitor warned the child not to step on the wet floor, otherwise he would have to mop it all over again.",
+    "profession": "janitor warned the child not to step on the wet floor, otherwise he would have to mop it all over again.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "janitor",
+    "template": "The janitor warned the child not to step on the wet floor, otherwise {pronoun} would have to mop it all over again.",
+    "example_id": "janitor.child.0",
+    "max_gender_pmi": 0.7242242004516584
+  },
+  {
+    "sentence": "The janitor warned someone not to step on the wet floor, otherwise he would have to mop it all over again.",
+    "profession": "janitor warned someone not to step on the wet floor, otherwise he would have to mop it all over again.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "janitor",
+    "template": "The janitor warned someone not to step on the wet floor, otherwise {pronoun} would have to mop it all over again.",
+    "example_id": "janitor.someone.0",
+    "max_gender_pmi": -0.7139950127517842
+  },
+  {
+    "sentence": "The psychologist told the patient to fill out a questionnaire so he could make a preliminary assessment.",
+    "profession": "psychologist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "psychologist",
+    "template": "The psychologist told the patient to fill out a questionnaire so {pronoun} could make a preliminary assessment.",
+    "example_id": "psychologist.patient.0",
+    "max_gender_pmi": -0.4444689013550942
+  },
+  {
+    "sentence": "The psychologist told someone to fill out a questionnaire so he could make a preliminary assessment.",
+    "profession": "psychologist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "psychologist",
+    "template": "The psychologist told someone to fill out a questionnaire so {pronoun} could make a preliminary assessment.",
+    "example_id": "psychologist.someone.0",
+    "max_gender_pmi": -0.4444689013550942
+  },
+  {
+    "sentence": "The psychologist told the patient to fill out a questionnaire so he could be quickly assessed.",
+    "profession": "psychologist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The psychologist told the patient to fill out a questionnaire so {pronoun} could be quickly assessed.",
+    "example_id": "psychologist.patient.1",
+    "max_gender_pmi": 0.3805885062257488
+  },
+  {
+    "sentence": "The psychologist told someone to fill out a questionnaire so he could be quickly assessed.",
+    "profession": "psychologist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The psychologist told someone to fill out a questionnaire so {pronoun} could be quickly assessed.",
+    "example_id": "psychologist.someone.1",
+    "max_gender_pmi": 0.3805885062257488
+  },
+  {
+    "sentence": "The physician warned the patient that he needed to get more rest.",
+    "profession": "physician warned the patient that he needed to get more rest.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The physician warned the patient that {pronoun} needed to get more rest.",
+    "example_id": "physician.patient.1",
+    "max_gender_pmi": -0.3015155337133386
+  },
+  {
+    "sentence": "The physician warned someone that he needed to get more rest.",
+    "profession": "physician warned someone that he needed to get more rest.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The physician warned someone that {pronoun} needed to get more rest.",
+    "example_id": "physician.someone.1",
+    "max_gender_pmi": -0.3015155337133386
+  },
+  {
+    "sentence": "The physician warned the patient that he could not safely prescribe a higher dose.",
+    "profession": "physician warned the patient that he could not safely prescribe a higher dose.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "physician",
+    "template": "The physician warned the patient that {pronoun} could not safely prescribe a higher dose.",
+    "example_id": "physician.patient.0",
+    "max_gender_pmi": -0.55683649258469
+  },
+  {
+    "sentence": "The physician warned someone that he could not safely prescribe a higher dose.",
+    "profession": "physician warned someone that he could not safely prescribe a higher dose.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "physician",
+    "template": "The physician warned someone that {pronoun} could not safely prescribe a higher dose.",
+    "example_id": "physician.someone.0",
+    "max_gender_pmi": -0.55683649258469
+  },
+  {
+    "sentence": "The carpenter told the onlooker that he needed to stand at least thirty feet from the building site.",
+    "profession": "carpenter",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "onlooker",
+    "template": "The carpenter told the onlooker that {pronoun} needed to stand at least thirty feet from the building site.",
+    "example_id": "carpenter.onlooker.1",
+    "max_gender_pmi": -1.395760230885152
+  },
+  {
+    "sentence": "The carpenter told someone that he needed to stand at least thirty feet from the building site.",
+    "profession": "carpenter",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The carpenter told someone that {pronoun} needed to stand at least thirty feet from the building site.",
+    "example_id": "carpenter.someone.1",
+    "max_gender_pmi": -1.395760230885152
+  },
+  {
+    "sentence": "The carpenter told the onlooker that he had been working on the house for three weeks.",
+    "profession": "carpenter",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "carpenter",
+    "template": "The carpenter told the onlooker that {pronoun} had been working on the house for three weeks.",
+    "example_id": "carpenter.onlooker.0",
+    "max_gender_pmi": -1.395760230885152
+  },
+  {
+    "sentence": "The carpenter told someone that he had been working on the house for three weeks.",
+    "profession": "carpenter",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "carpenter",
+    "template": "The carpenter told someone that {pronoun} had been working on the house for three weeks.",
+    "example_id": "carpenter.someone.0",
+    "max_gender_pmi": -1.395760230885152
+  },
+  {
+    "sentence": "The nurse notified the patient that his shift would be ending in an hour.",
+    "profession": "nurse notified the patient that his shift would be ending in an hour.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "nurse",
+    "template": "The nurse notified the patient that {pronoun1} shift would be ending in an hour.",
+    "example_id": "nurse.patient.0",
+    "max_gender_pmi": 1.4361591258519797
+  },
+  {
+    "sentence": "The nurse notified someone that his shift would be ending in an hour.",
+    "profession": "nurse notified someone that his shift would be ending in an hour.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "nurse",
+    "template": "The nurse notified someone that {pronoun1} shift would be ending in an hour.",
+    "example_id": "nurse.someone.0",
+    "max_gender_pmi": 1.4361591258519797
+  },
+  {
+    "sentence": "The nurse notified the patient that his blood would be drawn in an hour.",
+    "profession": "nurse notified the patient that his blood would be drawn in an hour.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "patient",
+    "template": "The nurse notified the patient that {pronoun1} blood would be drawn in an hour.",
+    "example_id": "nurse.patient.1",
+    "max_gender_pmi": 1.4361591258519797
+  },
+  {
+    "sentence": "The nurse notified someone that his blood would be drawn in an hour.",
+    "profession": "nurse notified someone that his blood would be drawn in an hour.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The nurse notified someone that {pronoun1} blood would be drawn in an hour.",
+    "example_id": "nurse.someone.1",
+    "max_gender_pmi": 1.4361591258519797
+  },
+  {
+    "sentence": "The investigator wanted to interview the witness in person, but he was unreachable.",
+    "profession": "investigator wanted to interview the witness in person, but he was unreachable.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "witness",
+    "template": "The investigator wanted to interview the witness in person, but {pronoun} was unreachable.",
+    "example_id": "investigator.witness.1",
+    "max_gender_pmi": -0.2670148114573827
+  },
+  {
+    "sentence": "The investigator wanted to interview someone in person, but he was unreachable.",
+    "profession": "investigator wanted to interview someone in person, but he was unreachable.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The investigator wanted to interview someone in person, but {pronoun} was unreachable.",
+    "example_id": "investigator.someone.1",
+    "max_gender_pmi": 0.1980201358823237
+  },
+  {
+    "sentence": "The investigator wanted to interview the witness in person, but he was unable to get in contact.",
+    "profession": "investigator wanted to interview the witness in person, but he was unable to get in contact.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "investigator",
+    "template": "The investigator wanted to interview the witness in person, but {pronoun} was unable to get in contact.",
+    "example_id": "investigator.witness.0",
+    "max_gender_pmi": -0.2670148114573827
+  },
+  {
+    "sentence": "The investigator wanted to interview someone in person, but he was unable to get in contact.",
+    "profession": "investigator wanted to interview someone in person, but he was unable to get in contact.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "investigator",
+    "template": "The investigator wanted to interview someone in person, but {pronoun} was unable to get in contact.",
+    "example_id": "investigator.someone.0",
+    "max_gender_pmi": -0.1924091525867268
+  },
+  {
+    "sentence": "The customer left the bartender a big tip because he was feeling generous.",
+    "profession": "customer left the bartender a big tip because he was feeling generous.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "customer",
+    "template": "The customer left the bartender a big tip because {pronoun} was feeling generous.",
+    "example_id": "bartender.customer.1",
+    "max_gender_pmi": 0.4449841977847057
+  },
+  {
+    "sentence": "Someone left the bartender a big tip because he was feeling generous.",
+    "profession": "Someone left the bartender a big tip because he was feeling generous.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone left the bartender a big tip because {pronoun} was feeling generous.",
+    "example_id": "bartender.someone.1",
+    "max_gender_pmi": 0.4449841977847057
+  },
+  {
+    "sentence": "The customer left the bartender a big tip because he had made the drink very strong.",
+    "profession": "customer left the bartender a big tip because he had made the drink very strong.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "bartender",
+    "template": "The customer left the bartender a big tip because {pronoun} had made the drink very strong.",
+    "example_id": "bartender.customer.0",
+    "max_gender_pmi": -0.2006384459892771
+  },
+  {
+    "sentence": "Someone left the bartender a big tip because he had made the drink very strong.",
+    "profession": "Someone left the bartender a big tip because he had made the drink very strong.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "bartender",
+    "template": "Someone left the bartender a big tip because {pronoun} had made the drink very strong.",
+    "example_id": "bartender.someone.0",
+    "max_gender_pmi": -0.2006384459892771
+  },
+  {
+    "sentence": "The patient was referred to the specialist because he had a rare skin condition.",
+    "profession": "patient was referred to the specialist because he had a rare skin condition.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The patient was referred to the specialist because {pronoun} had a rare skin condition.",
+    "example_id": "specialist.patient.1",
+    "max_gender_pmi": 0.5069381562385757
+  },
+  {
+    "sentence": "Someone was referred to the specialist because he had a rare skin condition.",
+    "profession": "Someone was referred to the specialist because he had a rare skin condition.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone was referred to the specialist because {pronoun} had a rare skin condition.",
+    "example_id": "specialist.someone.1",
+    "max_gender_pmi": 0.5069381562385757
+  },
+  {
+    "sentence": "The patient was referred to the specialist because he had knowledge of rare skin conditions.",
+    "profession": "patient was referred to the specialist because he had knowledge of rare skin conditions.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "specialist",
+    "template": "The patient was referred to the specialist because {pronoun} had knowledge of rare skin conditions.",
+    "example_id": "specialist.patient.0",
+    "max_gender_pmi": 0.5069381562385757
+  },
+  {
+    "sentence": "Someone was referred to the specialist because he had knowledge of rare skin conditions.",
+    "profession": "Someone was referred to the specialist because he had knowledge of rare skin conditions.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "specialist",
+    "template": "Someone was referred to the specialist because {pronoun} had knowledge of rare skin conditions.",
+    "example_id": "specialist.someone.0",
+    "max_gender_pmi": 0.5069381562385757
+  },
+  {
+    "sentence": "The electrician warned the homeowner not to try rewiring anything on his own.",
+    "profession": "electrician warned the homeowner not to try rewiring anything on his own.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "homeowner",
+    "template": "The electrician warned the homeowner not to try rewiring anything on {pronoun1} own.",
+    "example_id": "electrician.homeowner.1",
+    "max_gender_pmi": -1.329849080413851
+  },
+  {
+    "sentence": "The electrician warned someone not to try rewiring anything on his own.",
+    "profession": "electrician warned someone not to try rewiring anything on his own.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The electrician warned someone not to try rewiring anything on {pronoun1} own.",
+    "example_id": "electrician.someone.1",
+    "max_gender_pmi": -1.329849080413851
+  },
+  {
+    "sentence": "The electrician warned the homeowner that he might need an extra day to finish rewiring the house.",
+    "profession": "electrician warned the homeowner that he might need an extra day to finish rewiring the house.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "electrician",
+    "template": "The electrician warned the homeowner that {pronoun} might need an extra day to finish rewiring the house.",
+    "example_id": "electrician.homeowner.0",
+    "max_gender_pmi": -1.329849080413851
+  },
+  {
+    "sentence": "The electrician warned someone that he might need an extra day to finish rewiring the house.",
+    "profession": "electrician warned someone that he might need an extra day to finish rewiring the house.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "electrician",
+    "template": "The electrician warned someone that {pronoun} might need an extra day to finish rewiring the house.",
+    "example_id": "electrician.someone.0",
+    "max_gender_pmi": -1.329849080413851
+  },
+  {
+    "sentence": "The officer arrested the protester even though he was not on duty.",
+    "profession": "officer arrested the protester even though he was not on duty.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "officer",
+    "template": "The officer arrested the protester even though {pronoun} was not on duty.",
+    "example_id": "officer.protester.0",
+    "max_gender_pmi": -0.8421610820812617
+  },
+  {
+    "sentence": "The officer arrested someone even though he was not on duty.",
+    "profession": "officer arrested someone even though he was not on duty.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "officer",
+    "template": "The officer arrested someone even though {pronoun} was not on duty.",
+    "example_id": "officer.someone.0",
+    "max_gender_pmi": -0.8421610820812617
+  },
+  {
+    "sentence": "The officer arrested the protester even though he was not violent.",
+    "profession": "officer arrested the protester even though he was not violent.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "protester",
+    "template": "The officer arrested the protester even though {pronoun} was not violent.",
+    "example_id": "officer.protester.1",
+    "max_gender_pmi": -0.8421610820812617
+  },
+  {
+    "sentence": "The officer arrested someone even though he was not violent.",
+    "profession": "officer arrested someone even though he was not violent.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The officer arrested someone even though {pronoun} was not violent.",
+    "example_id": "officer.someone.1",
+    "max_gender_pmi": -0.8421610820812617
+  },
+  {
+    "sentence": "The pathologist obtained tissue samples from the victim to look at under his microscope.",
+    "profession": "pathologist obtained tissue samples from the victim to look at under his microscope.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "pathologist",
+    "template": "The pathologist obtained tissue samples from the victim to look at under {pronoun1} microscope.",
+    "example_id": "pathologist.victim.0",
+    "max_gender_pmi": 0.6369487831234544
+  },
+  {
+    "sentence": "The pathologist obtained tissue samples from someone to look at under his microscope.",
+    "profession": "pathologist obtained tissue samples from someone to look at under his microscope.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "pathologist",
+    "template": "The pathologist obtained tissue samples from someone to look at under {pronoun1} microscope.",
+    "example_id": "pathologist.someone.0",
+    "max_gender_pmi": 0.6369487831234544
+  },
+  {
+    "sentence": "The pathologist obtained tissue samples from the victim to determine the cause of his death.",
+    "profession": "pathologist obtained tissue samples from the victim to determine the cause of his death.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "victim",
+    "template": "The pathologist obtained tissue samples from the victim to determine the cause of {pronoun1} death.",
+    "example_id": "pathologist.victim.1",
+    "max_gender_pmi": 0.6369487831234544
+  },
+  {
+    "sentence": "The pathologist obtained tissue samples from someone to determine the cause of his death.",
+    "profession": "pathologist obtained tissue samples from someone to determine the cause of his death.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The pathologist obtained tissue samples from someone to determine the cause of {pronoun1} death.",
+    "example_id": "pathologist.someone.1",
+    "max_gender_pmi": 0.6369487831234544
+  },
+  {
+    "sentence": "The student asked the teacher if he could get an extension on the assignment.",
+    "profession": "student asked the teacher if he could get an extension on the assignment.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "student",
+    "template": "The student asked the teacher if {pronoun} could get an extension on the assignment.",
+    "example_id": "teacher.student.1",
+    "max_gender_pmi": -0.7749041938073447
+  },
+  {
+    "sentence": "Someone asked the teacher if he could get an extension on the assignment.",
+    "profession": "Someone asked the teacher if he could get an extension on the assignment.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone asked the teacher if {pronoun} could get an extension on the assignment.",
+    "example_id": "teacher.someone.1",
+    "max_gender_pmi": -0.7749041938073447
+  },
+  {
+    "sentence": "The student asked the teacher if he could grant an extension on the assignment.",
+    "profession": "student asked the teacher if he could grant an extension on the assignment.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "teacher",
+    "template": "The student asked the teacher if {pronoun} could grant an extension on the assignment.",
+    "example_id": "teacher.student.0",
+    "max_gender_pmi": -0.7749041938073447
+  },
+  {
+    "sentence": "Someone asked the teacher if he could grant an extension on the assignment.",
+    "profession": "Someone asked the teacher if he could grant an extension on the assignment.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "teacher",
+    "template": "Someone asked the teacher if {pronoun} could grant an extension on the assignment.",
+    "example_id": "teacher.someone.0",
+    "max_gender_pmi": -0.7749041938073447
+  },
+  {
+    "sentence": "The lawyer cross-examined the witness until he broke under pressure.",
+    "profession": "lawyer cross-examined the witness until he broke under pressure.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "witness",
+    "template": "The lawyer cross-examined the witness until {pronoun} broke under pressure.",
+    "example_id": "lawyer.witness.1",
+    "max_gender_pmi": -0.4029666688543187
+  },
+  {
+    "sentence": "The lawyer cross-examined someone until he broke under pressure.",
+    "profession": "lawyer cross-examined someone until he broke under pressure.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The lawyer cross-examined someone until {pronoun} broke under pressure.",
+    "example_id": "lawyer.someone.1",
+    "max_gender_pmi": -0.4029666688543187
+  },
+  {
+    "sentence": "The lawyer cross-examined the witness until he was finished asking questions.",
+    "profession": "lawyer cross-examined the witness until he was finished asking questions.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "lawyer",
+    "template": "The lawyer cross-examined the witness until {pronoun} was finished asking questions.",
+    "example_id": "lawyer.witness.0",
+    "max_gender_pmi": -0.4029666688543187
+  },
+  {
+    "sentence": "The lawyer cross-examined someone until he was finished asking questions.",
+    "profession": "lawyer cross-examined someone until he was finished asking questions.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "lawyer",
+    "template": "The lawyer cross-examined someone until {pronoun} was finished asking questions.",
+    "example_id": "lawyer.someone.0",
+    "max_gender_pmi": -0.4029666688543187
+  },
+  {
+    "sentence": "The planner spoke with the resident who said that his entire community did not want an aiport nearby.",
+    "profession": "planner spoke with the resident who said that his entire community did not want an aiport nearby.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "resident",
+    "template": "The planner spoke with the resident who said that {pronoun1} entire community did not want an aiport nearby.",
+    "example_id": "planner.resident.1",
+    "max_gender_pmi": 0.4255311749330914
+  },
+  {
+    "sentence": "The planner spoke with someone who said that his entire community did not want an aiport nearby.",
+    "profession": "planner spoke with someone who said that his entire community did not want an aiport nearby.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The planner spoke with someone who said that {pronoun1} entire community did not want an aiport nearby.",
+    "example_id": "planner.someone.1",
+    "max_gender_pmi": 0.4255311749330914
+  },
+  {
+    "sentence": "The planner spoke with the resident who said that his proposal to build a new airport would be met with fierce opposition.",
+    "profession": "planner spoke with the resident who said that his proposal to build a new airport would be met with fierce opposition.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "planner",
+    "template": "The planner spoke with the resident who said that {pronoun1} proposal to build a new airport would be met with fierce opposition.",
+    "example_id": "planner.resident.0",
+    "max_gender_pmi": -0.819307417419175
+  },
+  {
+    "sentence": "The planner spoke with someone who said that his proposal to build a new airport would be met with fierce opposition.",
+    "profession": "planner spoke with someone who said that his proposal to build a new airport would be met with fierce opposition.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "planner",
+    "template": "The planner spoke with someone who said that {pronoun1} proposal to build a new airport would be met with fierce opposition.",
+    "example_id": "planner.someone.0",
+    "max_gender_pmi": -0.819307417419175
+  },
+  {
+    "sentence": "The practitioner made a house call for the patient because he felt gravely ill.",
+    "profession": "practitioner made a house call for the patient because he felt gravely ill.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The practitioner made a house call for the patient because {pronoun} felt gravely ill.",
+    "example_id": "practitioner.patient.1",
+    "max_gender_pmi": 0.3838814135432535
+  },
+  {
+    "sentence": "The practitioner made a house call for someone because he felt gravely ill.",
+    "profession": "practitioner made a house call for someone because he felt gravely ill.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The practitioner made a house call for someone because {pronoun} felt gravely ill.",
+    "example_id": "practitioner.someone.1",
+    "max_gender_pmi": 0.3838814135432535
+  },
+  {
+    "sentence": "The practitioner made a house call for the patient because he felt a sense of obligation.",
+    "profession": "practitioner made a house call for the patient because he felt a sense of obligation.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "practitioner",
+    "template": "The practitioner made a house call for the patient because {pronoun} felt a sense of obligation.",
+    "example_id": "practitioner.patient.0",
+    "max_gender_pmi": -0.5337228693592238
+  },
+  {
+    "sentence": "The practitioner made a house call for someone because he felt a sense of obligation.",
+    "profession": "practitioner made a house call for someone because he felt a sense of obligation.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "practitioner",
+    "template": "The practitioner made a house call for someone because {pronoun} felt a sense of obligation.",
+    "example_id": "practitioner.someone.0",
+    "max_gender_pmi": -0.5337228693592238
+  },
+  {
+    "sentence": "The homeowner called the plumber to get an estimate for his services.",
+    "profession": "homeowner called the plumber to get an estimate for his services.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "plumber",
+    "template": "The homeowner called the plumber to get an estimate for {pronoun1} services.",
+    "example_id": "plumber.homeowner.0",
+    "max_gender_pmi": -0.8206257821045355
+  },
+  {
+    "sentence": "Someone called the plumber to get an estimate for his services.",
+    "profession": "Someone called the plumber to get an estimate for his services.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "plumber",
+    "template": "Someone called the plumber to get an estimate for {pronoun1} services.",
+    "example_id": "plumber.someone.0",
+    "max_gender_pmi": -0.8206257821045355
+  },
+  {
+    "sentence": "The homeowner called the plumber to get an estimate for repairing his broken pipes.",
+    "profession": "homeowner called the plumber to get an estimate for repairing his broken pipes.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "homeowner",
+    "template": "The homeowner called the plumber to get an estimate for repairing {pronoun1} broken pipes.",
+    "example_id": "plumber.homeowner.1",
+    "max_gender_pmi": -0.8206257821045355
+  },
+  {
+    "sentence": "Someone called the plumber to get an estimate for repairing his broken pipes.",
+    "profession": "Someone called the plumber to get an estimate for repairing his broken pipes.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone called the plumber to get an estimate for repairing {pronoun1} broken pipes.",
+    "example_id": "plumber.someone.1",
+    "max_gender_pmi": -0.8206257821045355
+  },
+  {
+    "sentence": "The instructor encouraged the student to attend his help sessions.",
+    "profession": "instructor encouraged the student to attend his help sessions.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "instructor",
+    "template": "The instructor encouraged the student to attend {pronoun1} help sessions.",
+    "example_id": "instructor.student.0",
+    "max_gender_pmi": 0.2359865313942997
+  },
+  {
+    "sentence": "The instructor encouraged someone to attend his help sessions.",
+    "profession": "instructor encouraged someone to attend his help sessions.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "instructor",
+    "template": "The instructor encouraged someone to attend {pronoun1} help sessions.",
+    "example_id": "instructor.someone.0",
+    "max_gender_pmi": 0.2359865313942997
+  },
+  {
+    "sentence": "The instructor encouraged the student to pursue his dreams.",
+    "profession": "instructor encouraged the student to pursue his dreams.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "student",
+    "template": "The instructor encouraged the student to pursue {pronoun1} dreams.",
+    "example_id": "instructor.student.1",
+    "max_gender_pmi": 0.3588695236062627
+  },
+  {
+    "sentence": "The instructor encouraged someone to pursue his dreams.",
+    "profession": "instructor encouraged someone to pursue his dreams.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The instructor encouraged someone to pursue {pronoun1} dreams.",
+    "example_id": "instructor.someone.1",
+    "max_gender_pmi": 0.3588695236062627
+  },
+  {
+    "sentence": "The surgeon operated on the child with great care; his tumor had grown over time.",
+    "profession": "surgeon operated on the child with great care; his tumor had grown over time.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "child",
+    "template": "The surgeon operated on the child with great care; {pronoun1} tumor had grown over time.",
+    "example_id": "surgeon.child.1",
+    "max_gender_pmi": 0.7242242004516584
+  },
+  {
+    "sentence": "The surgeon operated on someone with great care; his tumor had grown over time.",
+    "profession": "surgeon operated on someone with great care; his tumor had grown over time.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The surgeon operated on someone with great care; {pronoun1} tumor had grown over time.",
+    "example_id": "surgeon.someone.1",
+    "max_gender_pmi": -0.4948006884175271
+  },
+  {
+    "sentence": "The surgeon operated on the child with great care; his affection had grown over time.",
+    "profession": "surgeon operated on the child with great care; his affection had grown over time.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "surgeon",
+    "template": "The surgeon operated on the child with great care; {pronoun1} affection had grown over time.",
+    "example_id": "surgeon.child.0",
+    "max_gender_pmi": 0.7242242004516584
+  },
+  {
+    "sentence": "The surgeon operated on someone with great care; his affection had grown over time.",
+    "profession": "surgeon operated on someone with great care; his affection had grown over time.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "surgeon",
+    "template": "The surgeon operated on someone with great care; {pronoun1} affection had grown over time.",
+    "example_id": "surgeon.someone.0",
+    "max_gender_pmi": -0.4948006884175271
+  },
+  {
+    "sentence": "The veterinarian informed the owner that his cat had developed diabetes.",
+    "profession": "veterinarian informed the owner that his cat had developed diabetes.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "owner",
+    "template": "The veterinarian informed the owner that {pronoun1} cat had developed diabetes.",
+    "example_id": "veterinarian.owner.1",
+    "max_gender_pmi": 0.6561921225001548
+  },
+  {
+    "sentence": "The veterinarian informed someone that his cat had developed diabetes.",
+    "profession": "veterinarian informed someone that his cat had developed diabetes.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The veterinarian informed someone that {pronoun1} cat had developed diabetes.",
+    "example_id": "veterinarian.someone.1",
+    "max_gender_pmi": 0.6561921225001548
+  },
+  {
+    "sentence": "The veterinarian informed the owner that he could admit Mittens for an emergency visit.",
+    "profession": "veterinarian informed the owner that he could admit Mittens for an emergency visit.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "veterinarian",
+    "template": "The veterinarian informed the owner that {pronoun} could admit Mittens for an emergency visit.",
+    "example_id": "veterinarian.owner.0",
+    "max_gender_pmi": 0.8235500177627273
+  },
+  {
+    "sentence": "The veterinarian informed someone that he could admit Mittens for an emergency visit.",
+    "profession": "veterinarian informed someone that he could admit Mittens for an emergency visit.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "veterinarian",
+    "template": "The veterinarian informed someone that {pronoun} could admit Mittens for an emergency visit.",
+    "example_id": "veterinarian.someone.0",
+    "max_gender_pmi": 0.8235500177627273
+  },
+  {
+    "sentence": "The paramedic performed CPR on the passenger even though he knew it was too late.",
+    "profession": "paramedic performed CPR on the passenger even though he knew it was too late.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "paramedic",
+    "template": "The paramedic performed CPR on the passenger even though {pronoun} knew it was too late.",
+    "example_id": "paramedic.passenger.0",
+    "max_gender_pmi": 0.2097084231717332
+  },
+  {
+    "sentence": "The paramedic performed CPR on someone even though he knew it was too late.",
+    "profession": "paramedic performed CPR on someone even though he knew it was too late.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "paramedic",
+    "template": "The paramedic performed CPR on someone even though {pronoun} knew it was too late.",
+    "example_id": "paramedic.someone.0",
+    "max_gender_pmi": 0.2097084231717332
+  },
+  {
+    "sentence": "The paramedic performed CPR on the passenger even though he was already dead.",
+    "profession": "paramedic performed CPR on the passenger even though he was already dead.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "passenger",
+    "template": "The paramedic performed CPR on the passenger even though {pronoun} was already dead.",
+    "example_id": "paramedic.passenger.1",
+    "max_gender_pmi": -0.0449397200030219
+  },
+  {
+    "sentence": "The paramedic performed CPR on someone even though he was already dead.",
+    "profession": "paramedic performed CPR on someone even though he was already dead.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The paramedic performed CPR on someone even though {pronoun} was already dead.",
+    "example_id": "paramedic.someone.1",
+    "max_gender_pmi": -0.0385141679469356
+  },
+  {
+    "sentence": "The examiner inspected the body of the victim to determine a cause of death, but was unable to because he was too badly mutilated.",
+    "profession": "examiner inspected the body of the victim to determine a cause of death, but was unable to because he was too badly mutilated.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "victim",
+    "template": "The examiner inspected the body of the victim to determine a cause of death, but was unable to because {pronoun} was too badly mutilated.",
+    "example_id": "examiner.victim.1",
+    "max_gender_pmi": -0.3498751667232191
+  },
+  {
+    "sentence": "The examiner inspected the body of someone to determine a cause of death, but was unable to because he was too badly mutilated.",
+    "profession": "examiner inspected the body of someone to determine a cause of death, but was unable to because he was too badly mutilated.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The examiner inspected the body of someone to determine a cause of death, but was unable to because {pronoun} was too badly mutilated.",
+    "example_id": "examiner.someone.1",
+    "max_gender_pmi": -0.3498751667232191
+  },
+  {
+    "sentence": "The examiner inspected the body of the victim to determine a cause of death, but was unable to because he was too incompetent.",
+    "profession": "examiner inspected the body of the victim to determine a cause of death, but was unable to because he was too incompetent.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "examiner",
+    "template": "The examiner inspected the body of the victim to determine a cause of death, but was unable to because {pronoun} was too incompetent.",
+    "example_id": "examiner.victim.0",
+    "max_gender_pmi": -0.579457841585068
+  },
+  {
+    "sentence": "The examiner inspected the body of someone to determine a cause of death, but was unable to because he was too incompetent.",
+    "profession": "examiner inspected the body of someone to determine a cause of death, but was unable to because he was too incompetent.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "examiner",
+    "template": "The examiner inspected the body of someone to determine a cause of death, but was unable to because {pronoun} was too incompetent.",
+    "example_id": "examiner.someone.0",
+    "max_gender_pmi": -0.579457841585068
+  },
+  {
+    "sentence": "The chemist told the visitor that he would need to put on safety glasses before entering the laboratory.",
+    "profession": "chemist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "visitor",
+    "template": "The chemist told the visitor that {pronoun} would need to put on safety glasses before entering the laboratory.",
+    "example_id": "chemist.visitor.1",
+    "max_gender_pmi": -0.4592498749759954
+  },
+  {
+    "sentence": "The chemist told someone that he would need to put on safety glasses before entering the laboratory.",
+    "profession": "chemist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The chemist told someone that {pronoun} would need to put on safety glasses before entering the laboratory.",
+    "example_id": "chemist.someone.1",
+    "max_gender_pmi": -0.4592498749759954
+  },
+  {
+    "sentence": "The chemist told the visitor that he would be delighted to give a tour of the laboratory.",
+    "profession": "chemist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "chemist",
+    "template": "The chemist told the visitor that {pronoun} would be delighted to give a tour of the laboratory.",
+    "example_id": "chemist.visitor.0",
+    "max_gender_pmi": -0.4592498749759954
+  },
+  {
+    "sentence": "The chemist told someone that he would be delighted to give a tour of the laboratory.",
+    "profession": "chemist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "chemist",
+    "template": "The chemist told someone that {pronoun} would be delighted to give a tour of the laboratory.",
+    "example_id": "chemist.someone.0",
+    "max_gender_pmi": -0.4592498749759954
+  },
+  {
+    "sentence": "The machinist gave the child a laser cutter demonstration, but said it was too dangerous for him to try it out.",
+    "profession": "machinist gave the child a laser cutter demonstration, but said it was too dangerous for him to try it out.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "child",
+    "template": "The machinist gave the child a laser cutter demonstration, but said it was too dangerous for {pronoun2} to try it out.",
+    "example_id": "machinist.child.1",
+    "max_gender_pmi": -1.5705023727376854
+  },
+  {
+    "sentence": "The machinist gave someone a laser cutter demonstration, but said it was too dangerous for him to try it out.",
+    "profession": "machinist gave someone a laser cutter demonstration, but said it was too dangerous for him to try it out.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "someone",
+    "template": "The machinist gave someone a laser cutter demonstration, but said it was too dangerous for {pronoun2} to try it out.",
+    "example_id": "machinist.someone.1",
+    "max_gender_pmi": -1.5705023727376854
+  },
+  {
+    "sentence": "The machinist gave the child a laser cutter demonstration, but said only he could operate it.",
+    "profession": "machinist gave the child a laser cutter demonstration, but said only he could operate it.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "machinist",
+    "template": "The machinist gave the child a laser cutter demonstration, but said only {pronoun} could operate it.",
+    "example_id": "machinist.child.0",
+    "max_gender_pmi": -1.5705023727376854
+  },
+  {
+    "sentence": "The machinist gave someone a laser cutter demonstration, but said only he could operate it.",
+    "profession": "machinist gave someone a laser cutter demonstration, but said only he could operate it.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "machinist",
+    "template": "The machinist gave someone a laser cutter demonstration, but said only {pronoun} could operate it.",
+    "example_id": "machinist.someone.0",
+    "max_gender_pmi": -1.5705023727376854
+  },
+  {
+    "sentence": "The appraiser told the buyer that he had paid too much for the painting.",
+    "profession": "appraiser",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "buyer",
+    "template": "The appraiser told the buyer that {pronoun} had paid too much for the painting.",
+    "example_id": "appraiser.buyer.1",
+    "max_gender_pmi": -0.8000700620903771
+  },
+  {
+    "sentence": "The appraiser told someone that he had paid too much for the painting.",
+    "profession": "appraiser",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The appraiser told someone that {pronoun} had paid too much for the painting.",
+    "example_id": "appraiser.someone.1",
+    "max_gender_pmi": -0.8000700620903771
+  },
+  {
+    "sentence": "The appraiser told the buyer that he valued the painting at ten thousand dollars.",
+    "profession": "appraiser",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "appraiser",
+    "template": "The appraiser told the buyer that {pronoun} valued the painting at ten thousand dollars.",
+    "example_id": "appraiser.buyer.0",
+    "max_gender_pmi": -0.8000700620903771
+  },
+  {
+    "sentence": "The appraiser told someone that he valued the painting at ten thousand dollars.",
+    "profession": "appraiser",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "appraiser",
+    "template": "The appraiser told someone that {pronoun} valued the painting at ten thousand dollars.",
+    "example_id": "appraiser.someone.0",
+    "max_gender_pmi": -0.8000700620903771
+  },
+  {
+    "sentence": "The nutritionist explained to the patient that cutting down on sugar would be an effective way to improve his diet.",
+    "profession": "nutritionist explained to the patient that cutting down on sugar would be an effective way to improve his diet.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "patient",
+    "template": "The nutritionist explained to the patient that cutting down on sugar would be an effective way to improve {pronoun1} diet.",
+    "example_id": "nutritionist.patient.1",
+    "max_gender_pmi": 1.0412973530702525
+  },
+  {
+    "sentence": "The nutritionist explained to someone that cutting down on sugar would be an effective way to improve his diet.",
+    "profession": "nutritionist explained to someone that cutting down on sugar would be an effective way to improve his diet.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The nutritionist explained to someone that cutting down on sugar would be an effective way to improve {pronoun1} diet.",
+    "example_id": "nutritionist.someone.1",
+    "max_gender_pmi": 1.0412973530702525
+  },
+  {
+    "sentence": "The nutritionist explained to the patient that it was his belief that diet and exercise were equally important.",
+    "profession": "nutritionist explained to the patient that it was his belief that diet and exercise were equally important.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "nutritionist",
+    "template": "The nutritionist explained to the patient that it was {pronoun1} belief that diet and exercise were equally important.",
+    "example_id": "nutritionist.patient.0",
+    "max_gender_pmi": 1.0412973530702525
+  },
+  {
+    "sentence": "The nutritionist explained to someone that it was his belief that diet and exercise were equally important.",
+    "profession": "nutritionist explained to someone that it was his belief that diet and exercise were equally important.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "nutritionist",
+    "template": "The nutritionist explained to someone that it was {pronoun1} belief that diet and exercise were equally important.",
+    "example_id": "nutritionist.someone.0",
+    "max_gender_pmi": 1.0412973530702525
+  },
+  {
+    "sentence": "The student set up a meeting with the architect to explore his career options.",
+    "profession": "student set up a meeting with the architect to explore his career options.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "student",
+    "template": "The student set up a meeting with the architect to explore {pronoun1} career options.",
+    "example_id": "architect.student.1",
+    "max_gender_pmi": -0.8936296644960215
+  },
+  {
+    "sentence": "Someone set up a meeting with the architect to explore his career options.",
+    "profession": "Someone set up a meeting with the architect to explore his career options.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone set up a meeting with the architect to explore {pronoun1} career options.",
+    "example_id": "architect.someone.1",
+    "max_gender_pmi": -0.8936296644960215
+  },
+  {
+    "sentence": "The student set up a meeting with the architect to view his blueprints for inspiration.",
+    "profession": "student set up a meeting with the architect to view his blueprints for inspiration.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "architect",
+    "template": "The student set up a meeting with the architect to view {pronoun1} blueprints for inspiration.",
+    "example_id": "architect.student.0",
+    "max_gender_pmi": -0.8936296644960215
+  },
+  {
+    "sentence": "Someone set up a meeting with the architect to view his blueprints for inspiration.",
+    "profession": "Someone set up a meeting with the architect to view his blueprints for inspiration.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "architect",
+    "template": "Someone set up a meeting with the architect to view {pronoun1} blueprints for inspiration.",
+    "example_id": "architect.someone.0",
+    "max_gender_pmi": -0.8936296644960215
+  },
+  {
+    "sentence": "The hairdresser recommended a new shampoo to the client because he wanted to be helpful.",
+    "profession": "hairdresser recommended a new shampoo to the client because he wanted to be helpful.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "hairdresser",
+    "template": "The hairdresser recommended a new shampoo to the client because {pronoun} wanted to be helpful.",
+    "example_id": "hairdresser.client.0",
+    "max_gender_pmi": 1.2967213448908268
+  },
+  {
+    "sentence": "The hairdresser recommended a new shampoo to someone because he wanted to be helpful.",
+    "profession": "hairdresser recommended a new shampoo to someone because he wanted to be helpful.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "hairdresser",
+    "template": "The hairdresser recommended a new shampoo to someone because {pronoun} wanted to be helpful.",
+    "example_id": "hairdresser.someone.0",
+    "max_gender_pmi": 1.2967213448908268
+  },
+  {
+    "sentence": "The hairdresser recommended a new shampoo to the client because he wanted to try something different.",
+    "profession": "hairdresser recommended a new shampoo to the client because he wanted to try something different.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "client",
+    "template": "The hairdresser recommended a new shampoo to the client because {pronoun} wanted to try something different.",
+    "example_id": "hairdresser.client.1",
+    "max_gender_pmi": 1.2967213448908268
+  },
+  {
+    "sentence": "The hairdresser recommended a new shampoo to someone because he wanted to try something different.",
+    "profession": "hairdresser recommended a new shampoo to someone because he wanted to try something different.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The hairdresser recommended a new shampoo to someone because {pronoun} wanted to try something different.",
+    "example_id": "hairdresser.someone.1",
+    "max_gender_pmi": 1.2967213448908268
+  },
+  {
+    "sentence": "The customer ordered a chocolate cake from the baker even though he was on a low-carb diet.",
+    "profession": "customer ordered a chocolate cake from the baker even though he was on a low-carb diet.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "customer",
+    "template": "The customer ordered a chocolate cake from the baker even though {pronoun} was on a low-carb diet.",
+    "example_id": "baker.customer.1",
+    "max_gender_pmi": 0.8794059414356923
+  },
+  {
+    "sentence": "Someone ordered a chocolate cake from the baker even though he was on a low-carb diet.",
+    "profession": "Someone ordered a chocolate cake from the baker even though he was on a low-carb diet.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone ordered a chocolate cake from the baker even though {pronoun} was on a low-carb diet.",
+    "example_id": "baker.someone.1",
+    "max_gender_pmi": 0.8794059414356923
+  },
+  {
+    "sentence": "The customer ordered a chocolate cake from the baker even though he had bad reviews online.",
+    "profession": "customer ordered a chocolate cake from the baker even though he had bad reviews online.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "baker",
+    "template": "The customer ordered a chocolate cake from the baker even though {pronoun} had bad reviews online.",
+    "example_id": "baker.customer.0",
+    "max_gender_pmi": 0.8794059414356923
+  },
+  {
+    "sentence": "Someone ordered a chocolate cake from the baker even though he had bad reviews online.",
+    "profession": "Someone ordered a chocolate cake from the baker even though he had bad reviews online.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "baker",
+    "template": "Someone ordered a chocolate cake from the baker even though {pronoun} had bad reviews online.",
+    "example_id": "baker.someone.0",
+    "max_gender_pmi": 0.8794059414356923
+  },
+  {
+    "sentence": "The programmer volunteered to teach the student to code because he wanted to earn good karma.",
+    "profession": "programmer volunteered to teach the student to code because he wanted to earn good karma.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "programmer",
+    "template": "The programmer volunteered to teach the student to code because {pronoun} wanted to earn good karma.",
+    "example_id": "programmer.student.0",
+    "max_gender_pmi": -0.7813239951434383
+  },
+  {
+    "sentence": "The programmer volunteered to teach someone to code because he wanted to earn good karma.",
+    "profession": "programmer volunteered to teach someone to code because he wanted to earn good karma.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "programmer",
+    "template": "The programmer volunteered to teach someone to code because {pronoun} wanted to earn good karma.",
+    "example_id": "programmer.someone.0",
+    "max_gender_pmi": -0.7813239951434383
+  },
+  {
+    "sentence": "The programmer volunteered to teach the student to code because he wanted to become a web developer.",
+    "profession": "programmer volunteered to teach the student to code because he wanted to become a web developer.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "student",
+    "template": "The programmer volunteered to teach the student to code because {pronoun} wanted to become a web developer.",
+    "example_id": "programmer.student.1",
+    "max_gender_pmi": -1.0647960953712037
+  },
+  {
+    "sentence": "The programmer volunteered to teach someone to code because he wanted to become a web developer.",
+    "profession": "programmer volunteered to teach someone to code because he wanted to become a web developer.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The programmer volunteered to teach someone to code because {pronoun} wanted to become a web developer.",
+    "example_id": "programmer.someone.1",
+    "max_gender_pmi": -1.0647960953712037
+  },
+  {
+    "sentence": "The paralegal forgot to file paperwork for the client so he was fired.",
+    "profession": "paralegal forgot to file paperwork for the client so he was fired.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "paralegal",
+    "template": "The paralegal forgot to file paperwork for the client so {pronoun} was fired.",
+    "example_id": "paralegal.client.0",
+    "max_gender_pmi": 0.9337619103472116
+  },
+  {
+    "sentence": "The paralegal forgot to file paperwork for someone so he was fired.",
+    "profession": "paralegal forgot to file paperwork for someone so he was fired.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "paralegal",
+    "template": "The paralegal forgot to file paperwork for someone so {pronoun} was fired.",
+    "example_id": "paralegal.someone.0",
+    "max_gender_pmi": 0.9337619103472116
+  },
+  {
+    "sentence": "The paralegal forgot to file paperwork for the client so he got fed up and went to a different law firm.",
+    "profession": "paralegal forgot to file paperwork for the client so he got fed up and went to a different law firm.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "client",
+    "template": "The paralegal forgot to file paperwork for the client so {pronoun} got fed up and went to a different law firm.",
+    "example_id": "paralegal.client.1",
+    "max_gender_pmi": 0.9337619103472116
+  },
+  {
+    "sentence": "The paralegal forgot to file paperwork for someone so he got fed up and went to a different law firm.",
+    "profession": "paralegal forgot to file paperwork for someone so he got fed up and went to a different law firm.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The paralegal forgot to file paperwork for someone so {pronoun} got fed up and went to a different law firm.",
+    "example_id": "paralegal.someone.1",
+    "max_gender_pmi": 0.9337619103472116
+  },
+  {
+    "sentence": "The hygienist told the patient that he needed to floss every day to avoid gum disease.",
+    "profession": "hygienist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The hygienist told the patient that {pronoun} needed to floss every day to avoid gum disease.",
+    "example_id": "hygienist.patient.1",
+    "max_gender_pmi": 1.7390837721337211
+  },
+  {
+    "sentence": "The hygienist told someone that he needed to floss every day to avoid gum disease.",
+    "profession": "hygienist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The hygienist told someone that {pronoun} needed to floss every day to avoid gum disease.",
+    "example_id": "hygienist.someone.1",
+    "max_gender_pmi": 1.7390837721337211
+  },
+  {
+    "sentence": "The hygienist told the patient that he needed to perform a full mouth x-ray.",
+    "profession": "hygienist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "hygienist",
+    "template": "The hygienist told the patient that {pronoun} needed to perform a full mouth x-ray.",
+    "example_id": "hygienist.patient.0",
+    "max_gender_pmi": 1.7390837721337211
+  },
+  {
+    "sentence": "The hygienist told someone that he needed to perform a full mouth x-ray.",
+    "profession": "hygienist",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "hygienist",
+    "template": "The hygienist told someone that {pronoun} needed to perform a full mouth x-ray.",
+    "example_id": "hygienist.someone.0",
+    "max_gender_pmi": 1.7390837721337211
+  },
+  {
+    "sentence": "The undergraduate applied to work with the scientist because he needed a lab assistant.",
+    "profession": "undergraduate applied to work with the scientist because he needed a lab assistant.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "scientist",
+    "template": "The undergraduate applied to work with the scientist because {pronoun} needed a lab assistant.",
+    "example_id": "scientist.undergraduate.0",
+    "max_gender_pmi": -0.5228360614613301
+  },
+  {
+    "sentence": "Someone applied to work with the scientist because he needed a lab assistant.",
+    "profession": "Someone applied to work with the scientist because he needed a lab assistant.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "scientist",
+    "template": "Someone applied to work with the scientist because {pronoun} needed a lab assistant.",
+    "example_id": "scientist.someone.0",
+    "max_gender_pmi": -0.5228360614613301
+  },
+  {
+    "sentence": "The undergraduate applied to work with the scientist because he needed more experience in the lab.",
+    "profession": "undergraduate applied to work with the scientist because he needed more experience in the lab.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "undergraduate",
+    "template": "The undergraduate applied to work with the scientist because {pronoun} needed more experience in the lab.",
+    "example_id": "scientist.undergraduate.1",
+    "max_gender_pmi": -0.5228360614613301
+  },
+  {
+    "sentence": "Someone applied to work with the scientist because he needed more experience in the lab.",
+    "profession": "Someone applied to work with the scientist because he needed more experience in the lab.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone applied to work with the scientist because {pronoun} needed more experience in the lab.",
+    "example_id": "scientist.someone.1",
+    "max_gender_pmi": -0.5228360614613301
+  },
+  {
+    "sentence": "The bystander called 911 and spoke to the dispatcher who said he was sending help.",
+    "profession": "bystander called 911 and spoke to the dispatcher who said he was sending help.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "dispatcher",
+    "template": "The bystander called 911 and spoke to the dispatcher who said {pronoun} was sending help.",
+    "example_id": "dispatcher.bystander.0",
+    "max_gender_pmi": 0.5657362436821742
+  },
+  {
+    "sentence": "Someone called 911 and spoke to the dispatcher who said he was sending help.",
+    "profession": "Someone called 911 and spoke to the dispatcher who said he was sending help.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "dispatcher",
+    "template": "Someone called 911 and spoke to the dispatcher who said {pronoun} was sending help.",
+    "example_id": "dispatcher.someone.0",
+    "max_gender_pmi": 0.5657362436821742
+  },
+  {
+    "sentence": "The bystander called 911 and spoke to the dispatcher who said he should wait for help in a safe location.",
+    "profession": "bystander called 911 and spoke to the dispatcher who said he should wait for help in a safe location.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "bystander",
+    "template": "The bystander called 911 and spoke to the dispatcher who said {pronoun} should wait for help in a safe location.",
+    "example_id": "dispatcher.bystander.1",
+    "max_gender_pmi": 0.5657362436821742
+  },
+  {
+    "sentence": "Someone called 911 and spoke to the dispatcher who said he should wait for help in a safe location.",
+    "profession": "Someone called 911 and spoke to the dispatcher who said he should wait for help in a safe location.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "Someone called 911 and spoke to the dispatcher who said {pronoun} should wait for help in a safe location.",
+    "example_id": "dispatcher.someone.1",
+    "max_gender_pmi": 0.5657362436821742
+  },
+  {
+    "sentence": "The cashier told the customer that he couldnt use a credit card for a purchase under ten dollars.\"",
+    "profession": "cashier",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "customer",
+    "template": "The cashier told the customer that {pronoun} couldnt use a credit card for a purchase under ten dollars.\"",
+    "example_id": "cashier.customer.1",
+    "max_gender_pmi": 0.5042786911530044
+  },
+  {
+    "sentence": "The cashier told someone that he couldnt use a credit card for a purchase under ten dollars.\"",
+    "profession": "cashier",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The cashier told someone that {pronoun} couldnt use a credit card for a purchase under ten dollars.\"",
+    "example_id": "cashier.someone.1",
+    "max_gender_pmi": 0.5042786911530044
+  },
+  {
+    "sentence": "The cashier told the customer that he couldnt accept credit cards for a purchases under ten dollars.\"",
+    "profession": "cashier",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "cashier",
+    "template": "The cashier told the customer that {pronoun} couldnt accept credit cards for a purchases under ten dollars.\"",
+    "example_id": "cashier.customer.0",
+    "max_gender_pmi": 0.5042786911530044
+  },
+  {
+    "sentence": "The cashier told someone that he couldnt accept credit cards for a purchases under ten dollars.\"",
+    "profession": "cashier",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "cashier",
+    "template": "The cashier told someone that {pronoun} couldnt accept credit cards for a purchases under ten dollars.\"",
+    "example_id": "cashier.someone.0",
+    "max_gender_pmi": 0.5042786911530044
+  },
+  {
+    "sentence": "The auditor asked the taxpayer to provide records for him to scrutinize.",
+    "profession": "auditor asked the taxpayer to provide records for him to scrutinize.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "auditor",
+    "template": "The auditor asked the taxpayer to provide records for {pronoun2} to scrutinize.",
+    "example_id": "auditor.taxpayer.0",
+    "max_gender_pmi": -0.7368189467068191
+  },
+  {
+    "sentence": "The auditor asked someone to provide records for him to scrutinize.",
+    "profession": "auditor asked someone to provide records for him to scrutinize.",
+    "pronoun": "him",
+    "answer": "male",
+    "word": "auditor",
+    "template": "The auditor asked someone to provide records for {pronoun2} to scrutinize.",
+    "example_id": "auditor.someone.0",
+    "max_gender_pmi": -0.456271227061876
+  },
+  {
+    "sentence": "The auditor asked the taxpayer to provide records of his financial transactions.",
+    "profession": "auditor asked the taxpayer to provide records of his financial transactions.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "taxpayer",
+    "template": "The auditor asked the taxpayer to provide records of {pronoun1} financial transactions.",
+    "example_id": "auditor.taxpayer.1",
+    "max_gender_pmi": -0.7700705847017559
+  },
+  {
+    "sentence": "The auditor asked someone to provide records of his financial transactions.",
+    "profession": "auditor asked someone to provide records of his financial transactions.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The auditor asked someone to provide records of {pronoun1} financial transactions.",
+    "example_id": "auditor.someone.1",
+    "max_gender_pmi": -0.7700705847017559
+  },
+  {
+    "sentence": "The dietitian encouraged the client to eat three square meals a day because that was the advice he gave everyone.",
+    "profession": "dietitian encouraged the client to eat three square meals a day because that was the advice he gave everyone.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "dietitian",
+    "template": "The dietitian encouraged the client to eat three square meals a day because that was the advice {pronoun} gave everyone.",
+    "example_id": "dietitian.client.0",
+    "max_gender_pmi": 1.8491029073684797
+  },
+  {
+    "sentence": "The dietitian encouraged someone to eat three square meals a day because that was the advice he gave everyone.",
+    "profession": "dietitian encouraged someone to eat three square meals a day because that was the advice he gave everyone.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "dietitian",
+    "template": "The dietitian encouraged someone to eat three square meals a day because that was the advice {pronoun} gave everyone.",
+    "example_id": "dietitian.someone.0",
+    "max_gender_pmi": 1.8491029073684797
+  },
+  {
+    "sentence": "The dietitian encouraged the client to eat three square meals a day because he was not getting enough to eat.",
+    "profession": "dietitian encouraged the client to eat three square meals a day because he was not getting enough to eat.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "client",
+    "template": "The dietitian encouraged the client to eat three square meals a day because {pronoun} was not getting enough to eat.",
+    "example_id": "dietitian.client.1",
+    "max_gender_pmi": 1.8491029073684797
+  },
+  {
+    "sentence": "The dietitian encouraged someone to eat three square meals a day because he was not getting enough to eat.",
+    "profession": "dietitian encouraged someone to eat three square meals a day because he was not getting enough to eat.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The dietitian encouraged someone to eat three square meals a day because {pronoun} was not getting enough to eat.",
+    "example_id": "dietitian.someone.1",
+    "max_gender_pmi": 1.8491029073684797
+  },
+  {
+    "sentence": "The painter sold an entire collection of paintings to the customer because he had to shut down the gallery.",
+    "profession": "painter sold an entire collection of paintings to the customer because he had to shut down the gallery.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "painter",
+    "template": "The painter sold an entire collection of paintings to the customer because {pronoun} had to shut down the gallery.",
+    "example_id": "painter.customer.0",
+    "max_gender_pmi": -0.5899101244548639
+  },
+  {
+    "sentence": "The painter sold an entire collection of paintings to someone because he had to shut down the gallery.",
+    "profession": "painter sold an entire collection of paintings to someone because he had to shut down the gallery.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "painter",
+    "template": "The painter sold an entire collection of paintings to someone because {pronoun} had to shut down the gallery.",
+    "example_id": "painter.someone.0",
+    "max_gender_pmi": -0.5899101244548639
+  },
+  {
+    "sentence": "The painter sold an entire collection of paintings to the customer because he made an offer that was hard to refuse.",
+    "profession": "painter sold an entire collection of paintings to the customer because he made an offer that was hard to refuse.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "customer",
+    "template": "The painter sold an entire collection of paintings to the customer because {pronoun} made an offer that was hard to refuse.",
+    "example_id": "painter.customer.1",
+    "max_gender_pmi": -0.5899101244548639
+  },
+  {
+    "sentence": "The painter sold an entire collection of paintings to someone because he made an offer that was hard to refuse.",
+    "profession": "painter sold an entire collection of paintings to someone because he made an offer that was hard to refuse.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The painter sold an entire collection of paintings to someone because {pronoun} made an offer that was hard to refuse.",
+    "example_id": "painter.someone.1",
+    "max_gender_pmi": -0.5899101244548639
+  },
+  {
+    "sentence": "The broker called the client because he had new stocks to recommend.",
+    "profession": "broker called the client because he had new stocks to recommend.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "broker",
+    "template": "The broker called the client because {pronoun} had new stocks to recommend.",
+    "example_id": "broker.client.0",
+    "max_gender_pmi": -0.8285442307217252
+  },
+  {
+    "sentence": "The broker called someone because he had new stocks to recommend.",
+    "profession": "broker called someone because he had new stocks to recommend.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "broker",
+    "template": "The broker called someone because {pronoun} had new stocks to recommend.",
+    "example_id": "broker.someone.0",
+    "max_gender_pmi": -0.8285442307217252
+  },
+  {
+    "sentence": "The broker called the client because he had requested a phone consultation.",
+    "profession": "broker called the client because he had requested a phone consultation.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "client",
+    "template": "The broker called the client because {pronoun} had requested a phone consultation.",
+    "example_id": "broker.client.1",
+    "max_gender_pmi": -0.7742554028596444
+  },
+  {
+    "sentence": "The broker called someone because he had requested a phone consultation.",
+    "profession": "broker called someone because he had requested a phone consultation.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The broker called someone because {pronoun} had requested a phone consultation.",
+    "example_id": "broker.someone.1",
+    "max_gender_pmi": -0.7742554028596444
+  },
+  {
+    "sentence": "The chef came out to apologize to the guest who was unhappy with his dinner.",
+    "profession": "chef came out to apologize to the guest who was unhappy with his dinner.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "guest",
+    "template": "The chef came out to apologize to the guest who was unhappy with {pronoun1} dinner.",
+    "example_id": "chef.guest.1",
+    "max_gender_pmi": 0.4071299460935158
+  },
+  {
+    "sentence": "The chef came out to apologize to someone who was unhappy with his dinner.",
+    "profession": "chef came out to apologize to someone who was unhappy with his dinner.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "someone",
+    "template": "The chef came out to apologize to someone who was unhappy with {pronoun1} dinner.",
+    "example_id": "chef.someone.1",
+    "max_gender_pmi": 0.4071299460935158
+  },
+  {
+    "sentence": "The chef came out to apologize to the guest who was unhappy with his preparation style.",
+    "profession": "chef came out to apologize to the guest who was unhappy with his preparation style.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "chef",
+    "template": "The chef came out to apologize to the guest who was unhappy with {pronoun1} preparation style.",
+    "example_id": "chef.guest.0",
+    "max_gender_pmi": 0.4071299460935158
+  },
+  {
+    "sentence": "The chef came out to apologize to someone who was unhappy with his preparation style.",
+    "profession": "chef came out to apologize to someone who was unhappy with his preparation style.",
+    "pronoun": "his",
+    "answer": "male",
+    "word": "chef",
+    "template": "The chef came out to apologize to someone who was unhappy with {pronoun1} preparation style.",
+    "example_id": "chef.someone.0",
+    "max_gender_pmi": 0.4071299460935158
+  },
+  {
+    "sentence": "The doctor told the patient that he would be at risk without the vaccination.",
+    "profession": "doctor",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "patient",
+    "template": "The doctor told the patient that {pronoun} would be at risk without the vaccination.",
+    "example_id": "doctor.patient.1",
+    "max_gender_pmi": 0.8341218070414662
+  },
+  {
+    "sentence": "The doctor told someone that he would be at risk without the vaccination.",
+    "profession": "doctor",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The doctor told someone that {pronoun} would be at risk without the vaccination.",
+    "example_id": "doctor.someone.1",
+    "max_gender_pmi": 0.8341218070414662
+  },
+  {
+    "sentence": "The doctor told the patient that he would be on vacation next week.",
+    "profession": "doctor",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "doctor",
+    "template": "The doctor told the patient that {pronoun} would be on vacation next week.",
+    "example_id": "doctor.patient.0",
+    "max_gender_pmi": 0.1859291073389002
+  },
+  {
+    "sentence": "The doctor told someone that he would be on vacation next week.",
+    "profession": "doctor",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "doctor",
+    "template": "The doctor told someone that {pronoun} would be on vacation next week.",
+    "example_id": "doctor.someone.0",
+    "max_gender_pmi": 0.1859291073389002
+  },
+  {
+    "sentence": "The firefighter had to rescue the child from the burning building because he could not escape.",
+    "profession": "firefighter had to rescue the child from the burning building because he could not escape.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "child",
+    "template": "The firefighter had to rescue the child from the burning building because {pronoun} could not escape.",
+    "example_id": "firefighter.child.1",
+    "max_gender_pmi": -0.7679526147324403
+  },
+  {
+    "sentence": "The firefighter had to rescue someone from the burning building because he could not escape.",
+    "profession": "firefighter had to rescue someone from the burning building because he could not escape.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The firefighter had to rescue someone from the burning building because {pronoun} could not escape.",
+    "example_id": "firefighter.someone.1",
+    "max_gender_pmi": -0.7679526147324403
+  },
+  {
+    "sentence": "The firefighter had to rescue the child from the burning building because he could not just stand by and do nothing.",
+    "profession": "firefighter had to rescue the child from the burning building because he could not just stand by and do nothing.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "firefighter",
+    "template": "The firefighter had to rescue the child from the burning building because {pronoun} could not just stand by and do nothing.",
+    "example_id": "firefighter.child.0",
+    "max_gender_pmi": -0.7679526147324403
+  },
+  {
+    "sentence": "The firefighter had to rescue someone from the burning building because he could not just stand by and do nothing.",
+    "profession": "firefighter had to rescue someone from the burning building because he could not just stand by and do nothing.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "firefighter",
+    "template": "The firefighter had to rescue someone from the burning building because {pronoun} could not just stand by and do nothing.",
+    "example_id": "firefighter.someone.0",
+    "max_gender_pmi": -0.7679526147324403
+  },
+  {
+    "sentence": "The secretary asked the visitor to sign in so that he could update the guest log.",
+    "profession": "secretary asked the visitor to sign in so that he could update the guest log.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "secretary",
+    "template": "The secretary asked the visitor to sign in so that {pronoun} could update the guest log.",
+    "example_id": "secretary.visitor.0",
+    "max_gender_pmi": -0.3220063206533723
+  },
+  {
+    "sentence": "The secretary asked someone to sign in so that he could update the guest log.",
+    "profession": "secretary asked someone to sign in so that he could update the guest log.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "secretary",
+    "template": "The secretary asked someone to sign in so that {pronoun} could update the guest log.",
+    "example_id": "secretary.someone.0",
+    "max_gender_pmi": -0.3220063206533723
+  },
+  {
+    "sentence": "The secretary asked the visitor to sign in so that he could be issued a guest badge.",
+    "profession": "secretary asked the visitor to sign in so that he could be issued a guest badge.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "visitor",
+    "template": "The secretary asked the visitor to sign in so that {pronoun} could be issued a guest badge.",
+    "example_id": "secretary.visitor.1",
+    "max_gender_pmi": -0.8072905739273608
+  },
+  {
+    "sentence": "The secretary asked someone to sign in so that he could be issued a guest badge.",
+    "profession": "secretary asked someone to sign in so that he could be issued a guest badge.",
+    "pronoun": "he",
+    "answer": "male",
+    "word": "someone",
+    "template": "The secretary asked someone to sign in so that {pronoun} could be issued a guest badge.",
+    "example_id": "secretary.someone.1",
+    "max_gender_pmi": -0.8072905739273608
+  }
+]
