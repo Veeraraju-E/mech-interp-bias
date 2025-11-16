@@ -5,7 +5,7 @@ from typing import Dict, List, Callable
 from transformer_lens import HookedTransformer
 from transformer_lens.hook_points import HookPoint
 from tqdm import tqdm
-from .activation_patching import get_all_hook_points
+from .hook_points import get_all_hook_points
 
 
 def attribution_patch(

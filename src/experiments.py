@@ -10,8 +10,7 @@ from tqdm import tqdm
 from .model_setup import load_model, get_tokenizer, setup_device
 from .data_loader import load_stereoset, load_winogender, get_stereoset_pairs
 from .bias_metrics import compute_bias_metric
-from .attribution_patching import attribution_patch
-from .ablations import scan_all_heads, scan_all_mlps
+from .methods.activation_patching import attribution_patch, scan_all_heads, scan_all_mlps
 
 
 def create_bias_metric_fn(model, tokenizer, dataset_name: str, target_tokens: Dict[str, List[int]] = None):
