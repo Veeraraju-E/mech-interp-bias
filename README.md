@@ -1,12 +1,17 @@
-# Bias Activation Patching Implementation
+# Mechanistically Interpreting and Mitigating Bias in LLMs
 
-This repository implements activation patching methods for mechanistic interpretability of bias in language models, specifically focusing on GPT-2 Medium with StereoSet and WinoGender datasets.
+This repository implements methods for mechanistically interpreting and mitigating bias in language models, specifically focusing on GPT-2 Medium with StereoSet (racial bias) and WinoGender (gender bias) datasets.
 
 ## Overview
 
-This implementation focuses on Activation Patching methods:
+### Current implementation focuses on Activation Patching methods:
 - **Attribution Patching**: Efficient gradient-based approximation of edge importance (Nanda 2023)
 - **Head/MLP Ablations**: Zero out entire attention heads or MLPs to measure bias impact (Yang et al. 2025)
+
+### Upcoming implementations
+#### Logit Lens style analysis
+#### Bias vector analysis
+#### Steering expreriments
 
 ## Installation
 
