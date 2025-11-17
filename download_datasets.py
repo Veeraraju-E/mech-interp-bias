@@ -25,11 +25,35 @@ def download_stereoset():
     
     stereoset_file = data_dir / "stereoset_test.json"
     
+    label_map = {0: "unrelated", 1: "antistereotype", 2: "stereotype"}
+    
     examples = []
     for item in dataset:
+        sentences_block = item["sentences"]
+        normalized_sentences = []
+        for sentence, sent_id, label in zip(
+            sentences_block["sentence"],
+            sentences_block["id"],
+            sentences_block["gold_label"]
+        ):
+            if isinstance(label, int):
+                label = label_map.get(label, "unrelated")
+            elif isinstance(label, str):
+                label = label.lower()
+            else:
+                label = "unrelated"
+            normalized_sentences.append({
+                "sentence": sentence,
+                "id": sent_id,
+                "gold_label": label
+            })
+        
         examples.append({
             "context": item["context"],
-            "sentences": item["sentences"]  # List of {sentence, gold_label}
+            "bias_type": item.get("bias_type", "unknown"),
+            "target": item.get("target", ""),
+            "id": item.get("id", ""),
+            "sentences": normalized_sentences
         })
     
     with open(stereoset_file, "w") as f:

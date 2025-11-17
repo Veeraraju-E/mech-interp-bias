@@ -1,7 +1,7 @@
 """Attribution patching: gradient-based edge importance estimation (Nanda 2023)."""
 
 import torch
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Any
 from transformer_lens import HookedTransformer
 from transformer_lens.hook_points import HookPoint
 from tqdm import tqdm
@@ -10,8 +10,8 @@ from .hook_points import get_all_hook_points
 
 def attribution_patch(
     model: HookedTransformer,
-    examples: List[torch.Tensor],
-    bias_metric_fn: Callable[[torch.Tensor], torch.Tensor],
+    examples: List[Dict[str, Any]],
+    bias_metric_fn: Callable[[torch.Tensor, Dict[str, Any]], torch.Tensor],
     hook_points: List[str] = None
 ) -> Dict[str, float]:
     """Compute attribution scores: grad(bias_metric) @ activation for each edge."""
@@ -21,7 +21,9 @@ def attribution_patch(
     all_attributions = {hook_name: [] for hook_name in hook_points}
     model.eval()
     
-    for tokens in tqdm(examples, desc="Computing attributions"):
+    for example in tqdm(examples, desc="Computing attributions"):
+        tokens = example["tokens"]
+        metadata = example.get("metadata", {})
         if tokens.dim() == 1:
             tokens = tokens.unsqueeze(0)
         tokens = tokens.to(model.cfg.device)
@@ -40,7 +42,7 @@ def attribution_patch(
         
         with torch.enable_grad():
             logits = model.run_with_hooks(tokens, fwd_hooks=hooks)
-            bias_score = bias_metric_fn(logits)
+            bias_score = bias_metric_fn(logits, metadata)
         
         if isinstance(bias_score, torch.Tensor):
             if bias_score.numel() > 1:

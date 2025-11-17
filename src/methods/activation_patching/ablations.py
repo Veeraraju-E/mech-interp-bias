@@ -1,7 +1,7 @@
 """Head and MLP ablation functions for bias analysis."""
 
 import torch
-from typing import Dict, List, Callable, Tuple
+from typing import Dict, List, Callable, Tuple, Any
 from transformer_lens import HookedTransformer
 from transformer_lens.hook_points import HookPoint
 from tqdm import tqdm
@@ -11,8 +11,8 @@ def ablate_head(
     model: HookedTransformer,
     layer: int,
     head: int,
-    examples: List[torch.Tensor],
-    bias_metric_fn: Callable[[torch.Tensor], float]
+    examples: List[Dict[str, Any]],
+    bias_metric_fn: Callable[[torch.Tensor, Dict[str, Any]], torch.Tensor]
 ) -> float:
     """Ablate a specific attention head and measure bias change (averaged over examples)."""
     hook_name = f"blocks.{layer}.attn.hook_z"
@@ -25,16 +25,23 @@ def ablate_head(
     hooks = [(hook_name, zero_head_hook)]
     bias_changes = []
     
-    for tokens in examples:
+    for example in examples:
+        tokens = example["tokens"]
+        metadata = example.get("metadata", {})
         if tokens.dim() == 1:
             tokens = tokens.unsqueeze(0)
         tokens = tokens.to(model.cfg.device)
         
         with torch.no_grad():
             original_logits = model(tokens)
-            original_bias = bias_metric_fn(original_logits)
+            original_bias = bias_metric_fn(original_logits, metadata)
             ablated_logits = model.run_with_hooks(tokens, fwd_hooks=hooks)
-            ablated_bias = bias_metric_fn(ablated_logits)
+            ablated_bias = bias_metric_fn(ablated_logits, metadata)
+        
+        if isinstance(original_bias, torch.Tensor):
+            original_bias = original_bias.item()
+        if isinstance(ablated_bias, torch.Tensor):
+            ablated_bias = ablated_bias.item()
         
         bias_changes.append(ablated_bias - original_bias)
     
@@ -44,8 +51,8 @@ def ablate_head(
 def ablate_mlp(
     model: HookedTransformer,
     layer: int,
-    examples: List[torch.Tensor],
-    bias_metric_fn: Callable[[torch.Tensor], float]
+    examples: List[Dict[str, Any]],
+    bias_metric_fn: Callable[[torch.Tensor, Dict[str, Any]], torch.Tensor]
 ) -> float:
     """Ablate MLP in a specific layer and measure bias change (averaged over examples)."""
     hook_name = f"blocks.{layer}.hook_mlp_out"
@@ -56,16 +63,23 @@ def ablate_mlp(
     hooks = [(hook_name, zero_mlp_hook)]
     bias_changes = []
     
-    for tokens in examples:
+    for example in examples:
+        tokens = example["tokens"]
+        metadata = example.get("metadata", {})
         if tokens.dim() == 1:
             tokens = tokens.unsqueeze(0)
         tokens = tokens.to(model.cfg.device)
         
         with torch.no_grad():
             original_logits = model(tokens)
-            original_bias = bias_metric_fn(original_logits)
+            original_bias = bias_metric_fn(original_logits, metadata)
             ablated_logits = model.run_with_hooks(tokens, fwd_hooks=hooks)
-            ablated_bias = bias_metric_fn(ablated_logits)
+            ablated_bias = bias_metric_fn(ablated_logits, metadata)
+        
+        if isinstance(original_bias, torch.Tensor):
+            original_bias = original_bias.item()
+        if isinstance(ablated_bias, torch.Tensor):
+            ablated_bias = ablated_bias.item()
         
         bias_changes.append(ablated_bias - original_bias)
     
@@ -74,8 +88,8 @@ def ablate_mlp(
 
 def scan_all_heads(
     model: HookedTransformer,
-    examples: List[torch.Tensor],
-    bias_metric_fn: Callable[[torch.Tensor], float]
+    examples: List[Dict[str, Any]],
+    bias_metric_fn: Callable[[torch.Tensor, Dict[str, Any]], torch.Tensor]
 ) -> Dict[Tuple[int, int], float]:
     """Scan all attention heads and compute their impact on bias."""
     n_layers = model.cfg.n_layers
@@ -98,8 +112,8 @@ def scan_all_heads(
 
 def scan_all_mlps(
     model: HookedTransformer,
-    examples: List[torch.Tensor],
-    bias_metric_fn: Callable[[torch.Tensor], float]
+    examples: List[Dict[str, Any]],
+    bias_metric_fn: Callable[[torch.Tensor, Dict[str, Any]], torch.Tensor]
 ) -> Dict[int, float]:
     """Scan all MLPs and compute their impact on bias."""
     n_layers = model.cfg.n_layers
