@@ -1,8 +1,13 @@
 """Download and save StereoSet and WinoGender datasets for local use."""
 
 import json
+import re
+import csv
 from pathlib import Path
+from urllib.request import urlopen
 from datasets import load_dataset
+import math
+from collections import Counter
 
 
 def download_stereoset():
@@ -33,103 +38,121 @@ def download_stereoset():
     print(f"Saved {len(examples)} StereoSet examples to {stereoset_file}")
     return examples
 
+# Extract pronoun from sentence
+def extract_pronoun(sentence):
+    """Extract pronoun from sentence."""
+    # Common pronouns in WinoGender
+    pronouns = ["he", "she", "him", "her", "his", "hers", "they", "them", "their"]
+    for p in pronouns:
+        # Check for pronoun with word boundaries
+        pattern = r'\b' + re.escape(p) + r'\b'
+        if re.search(pattern, sentence, re.IGNORECASE):
+            return p.lower()
+    return ""
 
+# Create template from sentence by replacing pronoun
+def create_template(sentence, pronoun):
+    """Create template by replacing pronoun with {pronoun} placeholder."""
+    if not pronoun:
+        return sentence
+    template = sentence
+    # Handle different pronoun forms with appropriate placeholders
+    if pronoun in ['his', 'her', 'hers']:
+        # Possessive forms use {pronoun1}
+        pattern = r'\b' + re.escape(pronoun) + r'\b'
+        template = re.sub(pattern, '{pronoun1}', template, flags=re.IGNORECASE)
+    elif pronoun in ['him', 'her']:
+        # Object forms use {pronoun2}
+        pattern = r'\b' + re.escape(pronoun) + r'\b'
+        template = re.sub(pattern, '{pronoun2}', template, flags=re.IGNORECASE)
+    else:
+        # Subject forms (he, she, they) use {pronoun}
+        pattern = r'\b' + re.escape(pronoun) + r'\b'
+        template = re.sub(pattern, '{pronoun}', template, flags=re.IGNORECASE)
+    return template
+    
 def download_winogender():
-    """Download WinoGender dataset and save to local file."""
-    print("Downloading WinoGender dataset...")
+    """Download WinoGender dataset from TSV file and save to local JSON."""    
+    tsv_url = "https://raw.githubusercontent.com/rudinger/winogender-schemas/master/data/all_sentences.tsv"
     
-    # Try different sources
-    dataset = None
-    try:
-        # Try test split first
-        dataset = load_dataset("ucinlp/unstereo-eval", "Winogender", split="test")
-        print(f"Loaded from 'ucinlp/unstereo-eval' Winogender test split")
-    except:
-        try:
-            # Try validation split
-            dataset = load_dataset("ucinlp/unstereo-eval", "Winogender", split="validation")
-            print(f"Loaded from 'ucinlp/unstereo-eval' Winogender validation split")
-        except:
-            # Try alternative source
-            try:
-                dataset = load_dataset("rudinger/winogender", split="test")
-                print(f"Loaded from 'rudinger/winogender' test split")
-            except:
-                dataset = load_dataset("rudinger/winogender", split="validation")
-                print(f"Loaded from 'rudinger/winogender' validation split")
+    print(f"Fetching data from {tsv_url}...")
+    response = urlopen(tsv_url)
+    data = response.read().decode('utf-8')
     
-    if dataset is None:
-        raise ValueError("Could not load WinoGender dataset from any source")
+    # Parse TSV
+    lines = data.strip().split('\n')
+    reader = csv.DictReader(lines, delimiter='\t')
     
-    print(f"Loaded {len(dataset)} examples from WinoGender")
+    # Group sentences by example_id (profession.word.number)
+    example_groups = {}
     
-    # Save to JSON
+    for row in reader:
+        sentid = row['sentid']
+        sentence = row['sentence']
+        
+        # Parse sentid: format is "profession.word.number.gender.txt"
+        # e.g., "technician.customer.1.male.txt"
+        parts = sentid.replace('.txt', '').split('.')
+        if len(parts) < 4:
+            continue
+        
+        profession = parts[0]
+        word = parts[1]
+        number = parts[2]
+        gender = parts[3]  # male, female, or neutral
+        
+        example_id = f"{profession}.{word}.{number}"
+        
+        if example_id not in example_groups:
+            example_groups[example_id] = {
+                'profession': profession,
+                'word': word,
+                'number': number,
+                'sentences': {}
+            }
+        
+        example_groups[example_id]['sentences'][gender] = sentence
+
+
+    examples = []
+    
+    for example_id, group in example_groups.items():
+        profession = group['profession']
+        word = group['word']
+        number = group['number']
+        
+        for gender, sentence in group['sentences'].items():
+            if gender == 'neutral':
+                continue
+            
+            pronoun = extract_pronoun(sentence)
+            template = create_template(sentence, pronoun)
+            
+            # Map gender to answer
+            answer = "male" if gender == "male" else "female"
+            
+            example = {
+                "sentence": sentence,
+                "profession": profession,
+                "pronoun": pronoun,
+                "answer": answer,
+                "word": word,
+                "template": template,
+                "example_id": example_id,
+            }
+            
+            examples.append(example)
+    
     data_dir = Path("data")
     data_dir.mkdir(exist_ok=True)
     
     winogender_file = data_dir / "winogender_test.json"
     
-    examples = []
-    for item in dataset:
-        sentence = item.get("sentence", item.get("text", ""))
-        template = item.get("template", "")
-        word = item.get("word", "")
-        
-        # Extract profession from sentence or template
-        # WinoGender format: "The [profession] told the [other] that [pronoun]..."
-        profession = ""
-        pronoun = ""
-        
-        # Try to extract profession from the sentence
-        if sentence:
-            # Common pattern: "The [profession] told..."
-            parts = sentence.split(" told ")
-            if len(parts) > 0:
-                profession_part = parts[0].replace("The ", "").strip()
-                profession = profession_part
-        
-        # Extract pronoun from sentence
-        pronouns = ["he", "she", "him", "her", "his", "hers"]
-        for p in pronouns:
-            if f" {p} " in sentence or sentence.endswith(f" {p}"):
-                pronoun = p
-                break
-        
-        # Determine gender from pronoun or other indicators
-        answer = ""
-        if pronoun in ["he", "him", "his"]:
-            answer = "male"
-        elif pronoun in ["she", "her", "hers"]:
-            answer = "female"
-        elif "max_gender_pmi" in item:
-            # Use PMI to determine gender if available
-            pmi = item.get("max_gender_pmi", 0)
-            if pmi > 0:
-                answer = "male"
-            elif pmi < 0:
-                answer = "female"
-        
-        example = {
-            "sentence": sentence,
-            "profession": profession,
-            "pronoun": pronoun,
-            "answer": answer,
-            "word": word,  # The other entity (customer, etc.)
-            "template": template
-        }
-        
-        # Add any additional useful fields
-        if "example_id" in item:
-            example["example_id"] = item["example_id"]
-        if "max_gender_pmi" in item:
-            example["max_gender_pmi"] = item["max_gender_pmi"]
-        
-        examples.append(example)
-    
     with open(winogender_file, "w") as f:
         json.dump(examples, f, indent=2)
     
-    print(f"Saved {len(examples)} WinoGender examples to {winogender_file}")
+    print(f"Downloaded and processed {len(examples)} WinoGender examples")
+    print(f"Saved to {winogender_file}")
     return examples
 
 

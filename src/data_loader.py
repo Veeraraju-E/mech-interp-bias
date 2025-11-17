@@ -87,7 +87,8 @@ def load_winogender(data_dir: Path = None) -> List[Dict[str, Any]]:
         data_dir: Directory containing the dataset file (default: ./data)
     
     Returns:
-        List of examples with format: {sentence, profession, pronoun, answer}
+        List of examples with all fields preserved from JSON:
+        {sentence, profession, pronoun, answer, word, template, example_id,...}
     """
     if data_dir is None:
         data_dir = Path("data")
@@ -105,7 +106,6 @@ def load_winogender(data_dir: Path = None) -> List[Dict[str, Any]]:
     with open(winogender_file, "r") as f:
         examples = json.load(f)
     
-    # Ensure all required fields are present
     for example in examples:
         if "sentence" not in example:
             example["sentence"] = example.get("text", "")
