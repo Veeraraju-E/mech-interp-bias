@@ -2,6 +2,8 @@
 __pycache__
 *.log
 *.out
-results/*
+results
+runs
 output
 requirements.md
+.cursor

@@ -1,23 +1,17 @@
-"""Main experiment orchestration for bias analysis."""
+"""Main experiment for Activation Patching."""
 
 import json
-import torch
-from typing import Dict, List, Any
+import argparse
+from typing import Dict, List, Any, Optional
 from pathlib import Path
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.model_setup import load_model, get_tokenizer, setup_device
-from src.data_loader import (
-    load_stereoset,
-    load_winogender,
-    build_stereoset_triplets,
-    build_winogender_pairs,
-    find_first_difference_tokens
-)
 from src.bias_metrics import compute_bias_metric, build_bias_metric_fn
-from src.methods.activation_patching import attribution_patch, scan_all_heads, scan_all_mlps
-
+from src.model_setup import *
+from src.data_loader import *
+from src.methods.activation_patching import *
+from src.cache_utils import *
 
 def _prepare_stereoset_examples(
     examples: List[Dict[str, Any]],
@@ -107,7 +101,9 @@ def run_attribution_patching_experiment(
     dataset_name: str,
     prepared_examples: List[Dict[str, Any]],
     bias_metric_fn,
-    output_dir: Path
+    output_dir: Path,
+    cache_dir: Optional[Path] = None,
+    use_cache: bool = True
 ) -> Dict[str, Any]:
     """Run attribution patching using dataset-specific prepared inputs."""
     print(f"Running attribution patching experiment on {dataset_name} ({len(prepared_examples)} prompts)...")
@@ -115,7 +111,20 @@ def run_attribution_patching_experiment(
         print("Warning: no prepared examples found; skipping attribution patching.")
         return {"attributions": {}, "ranked_edges": []}
     
-    attributions = attribution_patch(model, prepared_examples, bias_metric_fn)
+    model_name = get_model_name(model)
+    attributions = None
+    
+    if cache_dir and use_cache:
+        cached_attributions = load_cached_attribution_results(cache_dir, model_name, dataset_name)
+        if cached_attributions is not None:
+            attributions = cached_attributions
+            print("Using cached attribution results")
+    
+    if attributions is None:
+        attributions = attribution_patch(model, prepared_examples, bias_metric_fn)
+        
+        if cache_dir and use_cache:
+            cache_attribution_results(cache_dir, model_name, dataset_name, attributions, use_cache)
     
     results_file = output_dir / f"attribution_patching_{dataset_name}.json"
     with open(results_file, "w") as f:
@@ -138,7 +147,9 @@ def run_ablation_experiment(
     dataset_name: str,
     prepared_examples: List[Dict[str, Any]],
     bias_metric_fn,
-    output_dir: Path
+    output_dir: Path,
+    cache_dir: Optional[Path] = None,
+    use_cache: bool = True
 ) -> Dict[str, Any]:
     """Run head/MLP ablations using the same prepared prompts as attribution runs."""
     print(f"Running ablation experiment on {dataset_name}...")
@@ -151,11 +162,39 @@ def run_ablation_experiment(
             "ranked_mlps": []
         }
     
-    print("Scanning all attention heads...")
-    head_impacts = scan_all_heads(model, prepared_examples, bias_metric_fn)
+    model_name = get_model_name(model)
+    head_impacts = None
+    mlp_impacts = None
     
-    print("Scanning all MLPs...")
-    mlp_impacts = scan_all_mlps(model, prepared_examples, bias_metric_fn)
+    if cache_dir and use_cache:
+        cached_results = load_cached_ablation_results(cache_dir, model_name, dataset_name)
+        if cached_results is not None:
+            cached_heads, cached_mlps = cached_results
+            head_impacts = {}
+            for k, v in cached_heads.items():
+                if isinstance(k, str) and '_' in k:
+                    parts = k.split('_')
+                    if len(parts) == 2:
+                        head_impacts[(int(parts[0]), int(parts[1]))] = v
+                    else:
+                        head_impacts[k] = v
+                else:
+                    head_impacts[k] = v
+            mlp_impacts = {int(k) if isinstance(k, str) else k: v for k, v in cached_mlps.items()}
+            print("Using cached ablation results")
+    
+    if head_impacts is None or mlp_impacts is None:
+        if head_impacts is None:
+            print("Scanning all attention heads...")
+            head_impacts = scan_all_heads(model, prepared_examples, bias_metric_fn)
+        
+        if mlp_impacts is None:
+            print("Scanning all MLPs...")
+            mlp_impacts = scan_all_mlps(model, prepared_examples, bias_metric_fn)
+        
+        if cache_dir and use_cache:
+            head_dict = {f"{layer}_{head}": score for (layer, head), score in head_impacts.items()}
+            cache_ablation_results(cache_dir, model_name, dataset_name, head_dict, mlp_impacts, use_cache)
     
     head_file = output_dir / f"head_ablations_{dataset_name}.json"
     with open(head_file, "w") as f:
@@ -189,6 +228,27 @@ def run_ablation_experiment(
 
 def main():
     """Main experiment orchestration."""
+    parser = argparse.ArgumentParser(description="Activation patching experiments for bias analysis")
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Disable caching and recompute everything from scratch"
+    )
+    parser.add_argument(
+        "--cache-dir",
+        type=str,
+        default="runs/activation_patching/cache",
+        help="Directory to store/load cached components (default: runs/activation_patching/cache)"
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="results",
+        help="Directory to save results (default: results)"
+    )
+    
+    args = parser.parse_args()
+    
     print("Initializing model and datasets...")
     
     device = setup_device()
@@ -196,8 +256,20 @@ def main():
     model.to(device)
     tokenizer = get_tokenizer()
     
-    output_dir = Path("results")
+    output_dir = Path(args.output_dir)
     output_dir.mkdir(exist_ok=True)
+    
+    cache_dir = Path(args.cache_dir) if not args.no_cache else None
+    use_cache = not args.no_cache
+    
+    model_name = get_model_name(model)
+    
+    if cache_dir:
+        print(f"Cache directory: {cache_dir}")
+        if use_cache:
+            print("Caching enabled - will load from cache if available")
+        else:
+            print("Caching disabled - will recompute everything")
     
     print("Loading datasets...")
     stereoset_examples = load_stereoset()
@@ -207,11 +279,24 @@ def main():
     print(f"Loaded {len(winogender_examples)} WinoGender examples")
     
     print("\nComputing baseline bias metrics...")
-    stereoset_baseline = compute_bias_metric(model, stereoset_examples, "stereoset", tokenizer)
-    winogender_baseline = compute_bias_metric(model, winogender_examples, "winogender", tokenizer)
+    baseline_scores = {}
     
-    print(f"StereoSet baseline bias: {stereoset_baseline:.4f}")
-    print(f"WinoGender baseline bias: {winogender_baseline:.4f}")
+    for dataset_name in ["stereoset", "winogender"]:
+        examples = stereoset_examples if dataset_name == "stereoset" else winogender_examples
+        
+        if cache_dir and use_cache:
+            cached_scores = load_cached_bias_scores(cache_dir, model_name, dataset_name)
+            if cached_scores is not None:
+                baseline_scores[dataset_name] = cached_scores.get("baseline", None)
+                print(f"Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
+        
+        if dataset_name not in baseline_scores or baseline_scores[dataset_name] is None:
+            baseline = compute_bias_metric(model, examples, dataset_name, tokenizer)
+            baseline_scores[dataset_name] = baseline
+            print(f"{dataset_name.capitalize()} baseline bias: {baseline:.4f}")
+            
+            if cache_dir and use_cache:
+                cache_bias_scores(cache_dir, model_name, dataset_name, {"baseline": baseline}, use_cache)
     
     datasets = [
         ("stereoset", stereoset_examples),
@@ -225,19 +310,33 @@ def main():
         print(f"Running experiments on {dataset_name}")
         print(f"{'='*60}")
         
-        prepared_examples = prepare_dataset_inputs(dataset_name, examples, tokenizer)
+        prepared_examples = None
+        
+        if cache_dir and use_cache:
+            cached_examples = load_cached_prepared_examples(cache_dir, model_name, dataset_name)
+            if cached_examples is not None:
+                prepared_examples = cached_examples
+                print(f"Loaded {len(prepared_examples)} cached prepared examples")
+        
+        if prepared_examples is None:
+            prepared_examples = prepare_dataset_inputs(dataset_name, examples, tokenizer)
+            if cache_dir and use_cache:
+                cache_prepared_examples(cache_dir, model_name, dataset_name, prepared_examples, use_cache)
+        
         bias_metric_fn = build_bias_metric_fn(dataset_name)
         
         attribution_results = run_attribution_patching_experiment(
-            model, dataset_name, prepared_examples, bias_metric_fn, output_dir
+            model, dataset_name, prepared_examples, bias_metric_fn, output_dir,
+            cache_dir=cache_dir, use_cache=use_cache
         )
         
         ablation_results = run_ablation_experiment(
-            model, dataset_name, prepared_examples, bias_metric_fn, output_dir
+            model, dataset_name, prepared_examples, bias_metric_fn, output_dir,
+            cache_dir=cache_dir, use_cache=use_cache
         )
         
         all_results[dataset_name] = {
-            "baseline_bias": stereoset_baseline if dataset_name == "stereoset" else winogender_baseline,
+            "baseline_bias": baseline_scores[dataset_name],
             "attribution_patching": attribution_results,
             "ablations": ablation_results
         }
@@ -248,6 +347,8 @@ def main():
     
     print(f"\n{'='*60}")
     print("Experiments complete! Results saved to", output_dir)
+    if cache_dir and use_cache:
+        print(f"Cache saved to {cache_dir}")
     print(f"{'='*60}")
 
 
