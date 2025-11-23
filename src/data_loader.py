@@ -295,3 +295,45 @@ def get_stereoset_pairs(examples: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             pair["unrelated_sentence"] = triplet["unrelated_sentence"]
         pairs.append(pair)
     return pairs
+
+
+def load_stereoset_acdc_pairs(bias_type: str, data_dir: Path = None) -> List[Dict[str, Any]]:
+    """
+    Load pre-processed StereoSet ACDC pairs for a specific bias type.
+    
+    Args:
+        bias_type: "race" or "gender"
+        data_dir: Directory containing the dataset file (default: ./data)
+    
+    Returns:
+        List of prepared examples with tokens and metadata ready for activation patching.
+        Each example has the format: {"tokens": tensor(n_tokens), "metadata": dict}
+    """
+    data_dir = Path("data") if not data_dir else Path(data_dir)
+    
+    if bias_type not in ["race", "gender"]:
+        raise ValueError(f"bias_type must be 'race' or 'gender', got '{bias_type}'")
+    
+    acdc_file = data_dir / f"stereoset_{bias_type}_acdc_pairs.json"
+    
+    if not acdc_file.exists():
+        raise FileNotFoundError(f"StereoSet {bias_type} ACDC pairs not found at {acdc_file}. Please ensure the file exists in the data directory.")
+    
+    with open(acdc_file, "r") as f:
+        pairs = json.load(f)
+    
+    prepared_examples = []
+    for pair in pairs:
+        clean_entry = pair.get("clean", {})
+        if not clean_entry:
+            continue
+        
+        tokens_list = clean_entry.get("tokens", [])
+        if not tokens_list:
+            continue
+        
+        tokens = torch.tensor(tokens_list, dtype=torch.long)
+        metadata = clean_entry.get("metadata", {})
+        prepared_examples.append({"tokens": tokens,"metadata": metadata})
+    
+    return prepared_examples

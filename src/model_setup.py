@@ -1,40 +1,27 @@
-"""Model setup for GPT-2 Medium using TransformerLens."""
-
 import torch
 from transformer_lens import HookedTransformer
 from transformers import GPT2Tokenizer
 
 
-def load_model() -> HookedTransformer:
+def load_model(model_name: str = "gpt2-medium") -> HookedTransformer:
     """
-    Load GPT-2 Medium model with TransformerLens.
+    Load GPT-2 model with TransformerLens. (medium or large)
+    """
+    if model_name not in ["gpt2-medium", "gpt2-large"]:
+        raise ValueError(f"Unsupported model: {model_name}. Must be 'gpt2-medium' or 'gpt2-large'")
     
-    Returns:
-        HookedTransformer instance for GPT-2 Medium
-    """
-    model = HookedTransformer.from_pretrained("gpt2-medium")
+    model = HookedTransformer.from_pretrained(model_name)
     model.eval()
     return model
 
-
-def get_tokenizer() -> GPT2Tokenizer:
-    """
-    Load GPT-2 tokenizer.
+def get_tokenizer(model_name: str = "gpt2-medium") -> GPT2Tokenizer:
+    """Load GPT-2 tokenizer. (medium or large)"""
+    if model_name not in ["gpt2-medium", "gpt2-large"]:
+        raise ValueError(f"Unsupported model: {model_name}. Must be 'gpt2-medium' or 'gpt2-large'")
     
-    Returns:
-        GPT2Tokenizer instance
-    """
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2-medium")
+    tokenizer = GPT2Tokenizer.from_pretrained(model_name)
     tokenizer.pad_token = tokenizer.eos_token
     return tokenizer
 
-
 def setup_device() -> torch.device:
-    """
-    Setup compute device (CUDA if available, else CPU).
-    
-    Returns:
-        torch.device
-    """
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
-

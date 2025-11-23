@@ -1,12 +1,9 @@
-"""Caching utilities for expensive computations in bias analysis methods."""
-
 import json
 import pickle
 import hashlib
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 import numpy as np
-import torch
 
 
 def get_model_name(model) -> str:
@@ -17,7 +14,6 @@ def get_model_name(model) -> str:
         if hasattr(model.cfg, 'name'):
             return model.cfg.name
     return "gpt2-medium"
-
 
 def get_cache_key(model_name: str, dataset_name: str, method: str, **kwargs) -> str:
     """Generate a cache key from model, dataset, method, and additional parameters."""
@@ -50,7 +46,6 @@ def save_cache(cache_dir: Path, cache_key: str, data: Any, suffix: str = ".pkl")
     
     return cache_file
 
-
 def load_cache(cache_dir: Path, cache_key: str, suffix: str = ".pkl") -> Optional[Any]:
     """Load data from cache directory."""
     cache_file = cache_dir / f"{cache_key}{suffix}"
@@ -72,16 +67,9 @@ def load_cache(cache_dir: Path, cache_key: str, suffix: str = ".pkl") -> Optiona
         return None
 
 
-def cache_activations(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    activations: Dict[int, np.ndarray],
-    labels: np.ndarray,
-    position: str = "last",
-    use_cache: bool = True
-):
+def cache_activations(cache_dir: Path, model_name: str, dataset_name: str, activations: Dict[int, np.ndarray], labels: np.ndarray, position: str = "last", use_cache: bool = True) -> None:
     """Cache activations for linear probing."""
+
     if not use_cache:
         return
     
@@ -92,13 +80,9 @@ def cache_activations(
     save_cache(cache_dir, cache_key, cache_data, suffix=".npz")
 
 
-def load_cached_activations(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    position: str = "last"
-) -> Optional[tuple]:
+def load_cached_activations(cache_dir: Path, model_name: str, dataset_name: str, position: str = "last") -> Optional[tuple]:
     """Load cached activations and labels."""
+
     cache_key = get_cache_key(model_name, dataset_name, "linear_probing_activations", position=position)
     cached = load_cache(cache_dir, cache_key, suffix=".npz")
     
@@ -121,16 +105,10 @@ def load_cached_activations(
     return activations_dict, labels_array
 
 
-def cache_prepared_examples(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    prepared_examples: List[Dict[str, Any]],
-    use_cache: bool = True
-) -> Optional[List[Dict[str, Any]]]:
+def cache_prepared_examples(cache_dir: Path, model_name: str, dataset_name: str, prepared_examples: List[Dict[str, Any]], use_cache: bool = True) -> Optional[List[Dict[str, Any]]]:
     """Cache or load prepared examples for activation patching."""
-    if not use_cache:
-        return None
+
+    if not use_cache: return None
     
     cache_key = get_cache_key(model_name, dataset_name, "activation_patching_examples")
     cached = load_cache(cache_dir, cache_key, suffix=".pkl")
@@ -144,23 +122,13 @@ def cache_prepared_examples(
     return None
 
 
-def load_cached_prepared_examples(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[List[Dict[str, Any]]]:
+def load_cached_prepared_examples(cache_dir: Path, model_name: str,dataset_name: str) -> Optional[List[Dict[str, Any]]]:
     """Load cached prepared examples."""
     cache_key = get_cache_key(model_name, dataset_name, "activation_patching_examples")
     return load_cache(cache_dir, cache_key, suffix=".pkl")
 
 
-def cache_bias_scores(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    scores: Dict[str, float],
-    use_cache: bool = True
-) -> Optional[Dict[str, float]]:
+def cache_bias_scores(cache_dir: Path, model_name: str, dataset_name: str, scores: Dict[str, float], use_cache: bool = True) -> Optional[Dict[str, float]]:
     """Cache or load bias scores."""
     if not use_cache:
         return None
@@ -177,23 +145,13 @@ def cache_bias_scores(
     return None
 
 
-def load_cached_bias_scores(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[Dict[str, float]]:
+def load_cached_bias_scores(cache_dir: Path,model_name: str,dataset_name: str) -> Optional[Dict[str, float]]:
     """Load cached bias scores."""
     cache_key = get_cache_key(model_name, dataset_name, "bias_scores")
     return load_cache(cache_dir, cache_key, suffix=".json")
 
 
-def cache_attribution_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    attributions: Dict[str, float],
-    use_cache: bool = True
-) -> Optional[Dict[str, float]]:
+def cache_attribution_results(cache_dir: Path, model_name: str, dataset_name: str, attributions: Dict[str, float], use_cache: bool = True) -> Optional[Dict[str, float]]:
     """Cache or load attribution patching results."""
     if not use_cache:
         return None
@@ -210,24 +168,13 @@ def cache_attribution_results(
     return None
 
 
-def load_cached_attribution_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[Dict[str, float]]:
+def load_cached_attribution_results(cache_dir: Path, model_name: str, dataset_name: str) -> Optional[Dict[str, float]]:
     """Load cached attribution patching results."""
     cache_key = get_cache_key(model_name, dataset_name, "attribution_patching")
     return load_cache(cache_dir, cache_key, suffix=".json")
 
 
-def cache_ablation_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    head_impacts: Dict[Any, float],
-    mlp_impacts: Dict[int, float],
-    use_cache: bool = True
-) -> Optional[tuple]:
+def cache_ablation_results(cache_dir: Path, model_name: str, dataset_name: str, head_impacts: Dict[Any, float], mlp_impacts: Dict[int, float], use_cache: bool = True) -> Optional[tuple]:
     """Cache or load ablation results."""
     if not use_cache:
         return None
@@ -248,11 +195,7 @@ def cache_ablation_results(
     return None
 
 
-def load_cached_ablation_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[tuple]:
+def load_cached_ablation_results(cache_dir: Path, model_name: str, dataset_name: str) -> Optional[tuple]:
     """Load cached ablation results."""
     head_key = get_cache_key(model_name, dataset_name, "head_ablations")
     mlp_key = get_cache_key(model_name, dataset_name, "mlp_ablations")
@@ -264,4 +207,3 @@ def load_cached_ablation_results(
         return cached_heads, cached_mlps
     
     return None
-
