@@ -91,6 +91,10 @@ def prepare_dataset_inputs(
     """Dispatch to dataset-specific tokenization helpers."""
     if dataset_name == "stereoset":
         return _prepare_stereoset_examples(examples, tokenizer)
+    elif dataset_name == "stereoset_race":
+        return load_stereoset_acdc_pairs("race")
+    elif dataset_name == "stereoset_gender":
+        return load_stereoset_acdc_pairs("gender")
     elif dataset_name == "winogender":
         return _prepare_winogender_examples(examples, tokenizer)
     else:
@@ -230,6 +234,13 @@ def main():
     """Main experiment orchestration."""
     parser = argparse.ArgumentParser(description="Activation patching experiments for bias analysis")
     parser.add_argument(
+        "--model",
+        type=str,
+        default="gpt2-medium",
+        choices=["gpt2-medium", "gpt2-large"],
+        help="Model to use (default: gpt2-medium)"
+    )
+    parser.add_argument(
         "--no-cache",
         action="store_true",
         help="Disable caching and recompute everything from scratch"
@@ -250,19 +261,20 @@ def main():
     args = parser.parse_args()
     
     print("Initializing model and datasets...")
+    print(f"Using model: {args.model}")
     
     device = setup_device()
-    model = load_model()
+    model = load_model(args.model)
     model.to(device)
-    tokenizer = get_tokenizer()
+    tokenizer = get_tokenizer(args.model)
     
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(exist_ok=True)
+    model_name = get_model_name(model)
+    
+    output_dir = Path(args.output_dir) / model_name
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     cache_dir = Path(args.cache_dir) if not args.no_cache else None
     use_cache = not args.no_cache
-    
-    model_name = get_model_name(model)
     
     if cache_dir:
         print(f"Cache directory: {cache_dir}")
@@ -281,8 +293,9 @@ def main():
     print("\nComputing baseline bias metrics...")
     baseline_scores = {}
     
-    for dataset_name in ["stereoset", "winogender"]:
-        examples = stereoset_examples if dataset_name == "stereoset" else winogender_examples
+    for bias_type in ["race", "gender"]:
+        dataset_name = f"stereoset_{bias_type}"
+        filtered_examples = [ex for ex in stereoset_examples if ex.get("bias_type", "").lower() == bias_type]
         
         if cache_dir and use_cache:
             cached_scores = load_cached_bias_scores(cache_dir, model_name, dataset_name)
@@ -291,17 +304,33 @@ def main():
                 print(f"Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
         
         if dataset_name not in baseline_scores or baseline_scores[dataset_name] is None:
-            baseline = compute_bias_metric(model, examples, dataset_name, tokenizer)
-            baseline_scores[dataset_name] = baseline
-            print(f"{dataset_name.capitalize()} baseline bias: {baseline:.4f}")
-            
-            if cache_dir and use_cache:
-                cache_bias_scores(cache_dir, model_name, dataset_name, {"baseline": baseline}, use_cache)
+            if filtered_examples:
+                baseline = compute_bias_metric(model, filtered_examples, "stereoset", tokenizer)
+                baseline_scores[dataset_name] = baseline
+                print(f"{dataset_name.capitalize()} baseline bias: {baseline:.4f}")
+                
+                if cache_dir and use_cache:
+                    cache_bias_scores(cache_dir, model_name, dataset_name, {"baseline": baseline}, use_cache)
+            else:
+                baseline_scores[dataset_name] = 0.0
+                print(f"Warning: No examples found for {dataset_name}, setting baseline to 0.0")
     
-    datasets = [
-        ("stereoset", stereoset_examples),
-        ("winogender", winogender_examples)
-    ]
+    dataset_name = "winogender"
+    if cache_dir and use_cache:
+        cached_scores = load_cached_bias_scores(cache_dir, model_name, dataset_name)
+        if cached_scores is not None:
+            baseline_scores[dataset_name] = cached_scores.get("baseline", None)
+            print(f"Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
+    
+    if dataset_name not in baseline_scores or baseline_scores[dataset_name] is None:
+        baseline = compute_bias_metric(model, winogender_examples, dataset_name, tokenizer)
+        baseline_scores[dataset_name] = baseline
+        print(f"{dataset_name.capitalize()} baseline bias: {baseline:.4f}")
+        
+        if cache_dir and use_cache:
+            cache_bias_scores(cache_dir, model_name, dataset_name, {"baseline": baseline}, use_cache)
+    
+    datasets = [("stereoset_race", None), ("stereoset_gender", None), ("winogender", winogender_examples)]
     
     all_results = {}
     
@@ -319,11 +348,14 @@ def main():
                 print(f"Loaded {len(prepared_examples)} cached prepared examples")
         
         if prepared_examples is None:
-            prepared_examples = prepare_dataset_inputs(dataset_name, examples, tokenizer)
+            if dataset_name in ["stereoset_race", "stereoset_gender"]:
+                prepared_examples = prepare_dataset_inputs(dataset_name, None, tokenizer)
+            else:
+                prepared_examples = prepare_dataset_inputs(dataset_name, examples, tokenizer)
             if cache_dir and use_cache:
                 cache_prepared_examples(cache_dir, model_name, dataset_name, prepared_examples, use_cache)
         
-        bias_metric_fn = build_bias_metric_fn(dataset_name)
+        bias_metric_fn = build_bias_metric_fn("stereoset" if "stereoset" in dataset_name else dataset_name)
         
         attribution_results = run_attribution_patching_experiment(
             model, dataset_name, prepared_examples, bias_metric_fn, output_dir,
@@ -335,8 +367,9 @@ def main():
             cache_dir=cache_dir, use_cache=use_cache
         )
         
+        baseline = baseline_scores.get(dataset_name, 0.0)
         all_results[dataset_name] = {
-            "baseline_bias": baseline_scores[dataset_name],
+            "baseline_bias": baseline,
             "attribution_patching": attribution_results,
             "ablations": ablation_results
         }
