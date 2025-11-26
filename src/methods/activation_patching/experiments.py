@@ -230,6 +230,13 @@ def main():
     """Main experiment orchestration."""
     parser = argparse.ArgumentParser(description="Activation patching experiments for bias analysis")
     parser.add_argument(
+        "--model",
+        type=str,
+        default="gpt2-medium",
+        choices=["gpt2-medium", "gpt2-large"],
+        help="Model to use (default: gpt2-medium)"
+    )
+    parser.add_argument(
         "--no-cache",
         action="store_true",
         help="Disable caching and recompute everything from scratch"
@@ -250,19 +257,19 @@ def main():
     args = parser.parse_args()
     
     print("Initializing model and datasets...")
+    print(f"Using model: {args.model}")
     
     device = setup_device()
-    model = load_model()
+    model = load_model(args.model)
     model.to(device)
-    tokenizer = get_tokenizer()
+    tokenizer = get_tokenizer(args.model)
+    model_name = get_model_name(model)
     
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(exist_ok=True)
+    output_dir = Path(args.output_dir) / model_name
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     cache_dir = Path(args.cache_dir) if not args.no_cache else None
     use_cache = not args.no_cache
-    
-    model_name = get_model_name(model)
     
     if cache_dir:
         print(f"Cache directory: {cache_dir}")
