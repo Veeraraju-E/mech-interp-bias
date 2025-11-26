@@ -7,3 +7,4 @@ runs
 output
 .cursor
 requirements.md
+visualization.py

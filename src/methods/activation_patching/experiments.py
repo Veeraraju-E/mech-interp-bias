@@ -241,6 +241,13 @@ def main():
         help="Model to use (default: gpt2-medium)"
     )
     parser.add_argument(
+        "--model",
+        type=str,
+        default="gpt2-medium",
+        choices=["gpt2-medium", "gpt2-large"],
+        help="Model to use (default: gpt2-medium)"
+    )
+    parser.add_argument(
         "--no-cache",
         action="store_true",
         help="Disable caching and recompute everything from scratch"
@@ -262,14 +269,20 @@ def main():
     
     print("Initializing model and datasets...")
     print(f"Using model: {args.model}")
+    print(f"Using model: {args.model}")
     
     device = setup_device()
+    model = load_model(args.model)
     model = load_model(args.model)
     model.to(device)
     tokenizer = get_tokenizer(args.model)
     
     model_name = get_model_name(model)
+    tokenizer = get_tokenizer(args.model)
+    model_name = get_model_name(model)
     
+    output_dir = Path(args.output_dir) / model_name
+    output_dir.mkdir(parents=True, exist_ok=True)
     output_dir = Path(args.output_dir) / model_name
     output_dir.mkdir(parents=True, exist_ok=True)
     
