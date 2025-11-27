@@ -127,16 +127,11 @@ def build_bias_metric_fn(dataset_name: str):
     attribution objectives in Activation Patching (Nanda et al., 2023).
     """
     def metric_fn(logits: torch.Tensor, metadata: Dict[str, Any]) -> torch.Tensor:
-        def _select_logits(slice_logits: torch.Tensor) -> torch.Tensor:
-            if slice_logits.dim() == 3:
-                seq_len = slice_logits.shape[1]
-                position = metadata.get("logit_position", seq_len - 1)
-                position = max(0, min(seq_len - 1, position))
-                return slice_logits[0, position, :]
-            return slice_logits[-1, :]
-        
-        target_logits = _select_logits(logits)
-        log_probs = F.log_softmax(target_logits, dim=-1)
+        if logits.dim() == 3:
+            next_token_logits = logits[0, -1, :]
+        else:
+            next_token_logits = logits[-1, :]
+        log_probs = F.log_softmax(next_token_logits, dim=-1)
         
         if dataset_name == "stereoset":
             return _logprob_difference(
