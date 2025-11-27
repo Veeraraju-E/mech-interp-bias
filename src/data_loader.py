@@ -297,43 +297,71 @@ def get_stereoset_pairs(examples: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return pairs
 
 
-def load_stereoset_acdc_pairs(bias_type: str, data_dir: Path = None) -> List[Dict[str, Any]]:
+def load_acdc_pairs(dataset_type: str, data_dir: Path = None) -> List[Dict[str, Any]]:
     """
-    Load pre-processed StereoSet ACDC pairs for a specific bias type.
+    Load ACDC-formatted pairs for activation patching experiments.
     
     Args:
-        bias_type: "race" or "gender"
-        data_dir: Directory containing the dataset file (default: ./data)
+        dataset_type: One of "stereoset_gender", "stereoset_race", or "winogender"
+        data_dir: Directory containing the ACDC pair files (default: ./data)
     
     Returns:
-        List of prepared examples with tokens and metadata ready for activation patching.
-        Each example has the format: {"tokens": tensor(n_tokens), "metadata": dict}
+        List of ACDC pairs with clean/corrupted sentence pairs and metadata
     """
-    data_dir = Path("data") if not data_dir else Path(data_dir)
+    if data_dir is None:
+        data_dir = Path("data")
+    else:
+        data_dir = Path(data_dir)
     
-    if bias_type not in ["race", "gender"]:
-        raise ValueError(f"bias_type must be 'race' or 'gender', got '{bias_type}'")
+    file_map = {
+        "stereoset_gender": "stereoset_gender_acdc_pairs.json",
+        "stereoset_race": "stereoset_race_acdc_pairs.json",
+        "winogender": "winogender_acdc_pairs.json"
+    }
     
-    acdc_file = data_dir / f"stereoset_{bias_type}_acdc_pairs.json"
+    if dataset_type not in file_map:
+        raise ValueError(
+            f"Unknown dataset_type: {dataset_type}. "
+            f"Must be one of {list(file_map.keys())}"
+        )
     
-    if not acdc_file.exists():
-        raise FileNotFoundError(f"StereoSet {bias_type} ACDC pairs not found at {acdc_file}. Please ensure the file exists in the data directory.")
+    file_path = data_dir / file_map[dataset_type]
     
-    with open(acdc_file, "r") as f:
+    if not file_path.exists():
+        raise FileNotFoundError(
+            f"ACDC pairs file not found at {file_path}. "
+            f"Please ensure the file exists in the data directory."
+        )
+    
+    with open(file_path, "r") as f:
         pairs = json.load(f)
     
-    prepared_examples = []
-    for pair in pairs:
-        clean_entry = pair.get("clean", {})
-        if not clean_entry:
-            continue
-        
-        tokens_list = clean_entry.get("tokens", [])
-        if not tokens_list:
-            continue
-        
-        tokens = torch.tensor(tokens_list, dtype=torch.long)
-        metadata = clean_entry.get("metadata", {})
-        prepared_examples.append({"tokens": tokens,"metadata": metadata})
+    return pairs
+
+
+def get_acdc_stereoset_pairs(bias_type: str = "gender", data_dir: Path = None) -> List[Dict[str, Any]]:
+    """
+    Get ACDC-formatted StereoSet pairs for a specific bias type.
     
-    return prepared_examples
+    Args:
+        bias_type: Either "gender" or "race"
+        data_dir: Directory containing the ACDC pair files
+    
+    Returns:
+        List of clean/corrupted pairs for probing and interventions
+    """
+    dataset_type = f"stereoset_{bias_type}"
+    return load_acdc_pairs(dataset_type, data_dir)
+
+
+def get_acdc_winogender_pairs(data_dir: Path = None) -> List[Dict[str, Any]]:
+    """
+    Get ACDC-formatted WinoGender pairs.
+    
+    Args:
+        data_dir: Directory containing the ACDC pair files
+    
+    Returns:
+        List of clean/corrupted pairs with male/female pronoun swaps
+    """
+    return load_acdc_pairs("winogender", data_dir)
