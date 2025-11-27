@@ -237,14 +237,7 @@ def main():
         "--model",
         type=str,
         default="gpt2-medium",
-        choices=["gpt2-medium", "gpt2-large"],
-        help="Model to use (default: gpt2-medium)"
-    )
-    parser.add_argument(
-        "--model",
-        type=str,
-        default="gpt2-medium",
-        choices=["gpt2-medium", "gpt2-large"],
+        choices=["gpt2-medium", "gpt2-large", "gpt-neo-125M"],
         help="Model to use (default: gpt2-medium)"
     )
     parser.add_argument(
@@ -268,7 +261,6 @@ def main():
     args = parser.parse_args()
     
     print("Initializing model and datasets...")
-    print(f"Using model: {args.model}")
     print(f"Using model: {args.model}")
     
     device = setup_device()
