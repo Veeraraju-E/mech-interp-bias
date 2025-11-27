@@ -27,7 +27,7 @@ def load_model(model_name: str = "gpt2-medium") -> HookedTransformer:
     if model_name == "gpt-neo-125M":
         model_name = "EleutherAI/gpt-neo-125M"
     
-    model = HookedTransformer.from_pretrained(pretrained_name)
+    model = HookedTransformer.from_pretrained(model_name)
     model.eval()
     
     print(f"Model loaded: {model_name}")
