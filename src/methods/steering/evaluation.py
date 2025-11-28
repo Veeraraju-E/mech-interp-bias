@@ -28,7 +28,7 @@ def evaluate_bias_reduction(model: HookedTransformer, tokenizer, prompts: List[s
     glds = []
     device = model.cfg.device
     for prompt in prompts:
-        tokens = tokenizer.encode(prompt, return_tensors="pt").to(device)
+        tokens = tokenizer(prompt, return_tensors="pt")["input_ids"].to(device)
         logits = apply_suppression(
             model=model,
             tokens=tokens,
@@ -63,7 +63,12 @@ def evaluate_perplexity(model: HookedTransformer, tokenizer, text_corpus: List[s
     steered_losses = []
 
     for text in text_corpus:
-        tokens = tokenizer.encode(text, return_tensors="pt", max_length=max_length, truncation=True)
+        tokens = tokenizer(
+            text,
+            return_tensors="pt",
+            max_length=max_length,
+            truncation=True,
+        )["input_ids"]
         if tokens.numel() < 2:
             continue
         tokens = tokens.to(device)

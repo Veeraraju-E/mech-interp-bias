@@ -93,11 +93,11 @@ def evaluate_mmlu_accuracy(
 
     for example in tqdm(samples, desc="Evaluating MMLU"):
         prompt = _format_prompt(example["question"], example["choices"])
-        prompt_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
+        prompt_ids = tokenizer(prompt, return_tensors="pt")["input_ids"].to(device)
 
         choice_scores = []
         for choice in example["choices"]:
-            choice_ids = tokenizer.encode(" " + choice, return_tensors="pt").to(device)
+            choice_ids = tokenizer(" " + choice, return_tensors="pt")["input_ids"].to(device)
             tokens = torch.cat([prompt_ids, choice_ids], dim=1)
             with torch.no_grad():
                 logits = _run_with_hooks(model, tokens, steering_hooks)

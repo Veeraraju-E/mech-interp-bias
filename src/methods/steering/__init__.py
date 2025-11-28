@@ -8,6 +8,7 @@ from .evaluation import evaluate_bias_reduction, evaluate_perplexity
 from .experiments import run_experiment
 from .mmlu import DEFAULT_MMLU_SUBJECTS, evaluate_mmlu_accuracy, load_mmlu_samples
 from .visualization import plot_activation_profile, plot_latent_profile
+from .latent_analysis import analyze_top_latent_samples, find_top_biased_latents, find_top_samples_for_latent
 
 __all__ = [
     "collect_activation_dataset",
@@ -24,6 +25,9 @@ __all__ = [
     "DEFAULT_MMLU_SUBJECTS",
     "plot_activation_profile",
     "plot_latent_profile",
+    "analyze_top_latent_samples",
+    "find_top_biased_latents",
+    "find_top_samples_for_latent",
     "run_experiment",
 ]
 

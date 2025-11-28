@@ -1,6 +1,6 @@
-# Mechanistically Interpreting and Mitigating Bias in LLMs
+# Fantastic Biases and Where to Find Them
 
-This repository implements methods for mechanistically interpreting and mitigating bias in language models, specifically focusing on GPT-2 Medium with StereoSet (racial bias) and WinoGender (gender bias) datasets.
+We present our work on mechanistically interpreting mitigate racial and gender bias in LLMs. We specifically focus on OSS models like GPT-2 (Medium/Large) and Eleuther AI's GPT-Neo on StereoSet (gender and racial bias) and WinoGender (gender bias) datasets.
 
 ---
 
@@ -39,7 +39,7 @@ All experimental entry points live inside `src/methods`, which keeps datasets, m
    ```bash
    uv venv
    source .venv/bin/activate
-   pip install -r requirements.txt
+   uv pip install -r requirements.txt
    ```
 
 2. **Model + tokenizer loading**  

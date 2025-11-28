@@ -54,9 +54,7 @@ class SparseAutoencoder(nn.Module):
             return reconstruction, latents
         return reconstruction
 
-    def compute_loss(self, activations: torch.Tensor, lambda_l1: float = 0.0) -> Tuple[torch.Tensor, float, float]:
-        reconstruction, latents = self.forward(activations, apply_sparsity=True, return_latents=True)
+    def compute_loss(self, activations: torch.Tensor) -> Tuple[torch.Tensor, float]:
+        reconstruction = self.forward(activations, apply_sparsity=True)
         recon_loss = F.mse_loss(reconstruction, activations)
-        sparsity_loss = latents.abs().mean()
-        total = recon_loss + lambda_l1 * sparsity_loss
-        return total, recon_loss.item(), sparsity_loss.item()
+        return recon_loss, recon_loss.item()

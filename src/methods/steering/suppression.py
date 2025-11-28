@@ -26,10 +26,7 @@ def create_suppression_hook(sae: SparseAutoencoder, suppressed_latents: List[int
 
 def apply_suppression(model: HookedTransformer, tokens: torch.Tensor, sae: SparseAutoencoder, suppressed_latents: List[int], layer: int, scale: float = 0.0) -> torch.Tensor:
     """Run model with suppression hook applied at a given layer."""
-    if layer == 0:
-        hook_name = "blocks.0.hook_resid_pre"
-    else:
-        hook_name = f"blocks.{layer-1}.hook_resid_post"
+    hook_name = "blocks.0.hook_resid_pre" if layer == 0 else f"blocks.{layer-1}.hook_resid_post"
     hook_fn = create_suppression_hook(sae, suppressed_latents, scale=scale)
     with torch.no_grad():
         logits = model.run_with_hooks(tokens, fwd_hooks=[(hook_name, hook_fn)])

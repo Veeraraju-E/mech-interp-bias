@@ -17,9 +17,7 @@ def train_sae(
     batch_size: int = 1024,
     epochs: int = 10,
     lr: float = 1e-4,
-    lambda_l1: float = 0.0,
 ) -> Tuple[SparseAutoencoder, Dict[str, Any]]:
-    """Train a Sparse Autoencoder on pre-collected activations."""
     sae = SparseAutoencoder(d_model=d_model, d_latent=d_latent or (d_model * 8), k_sparse=k_sparse, device=device)
     dataset = TensorDataset(torch.from_numpy(activations).float())
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -33,7 +31,7 @@ def train_sae(
     for epoch in range(epochs):
         for batch, in dataloader:
             batch = batch.to(device)
-            loss, recon, sparsity = sae.compute_loss(batch, lambda_l1=lambda_l1)
+            loss, _ = sae.compute_loss(batch)
             optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(sae.parameters(), max_norm=1.0)

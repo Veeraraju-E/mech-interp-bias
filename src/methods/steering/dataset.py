@@ -85,7 +85,7 @@ def _token_ids(tokenizer, text: str) -> List[int]:
 def compute_pronoun_probs(model, tokenizer, prompt: str) -> Tuple[float, float]:
     """Return probabilities for 'he' and 'she' conditioned on prompt."""
     device = model.cfg.device
-    tokens = tokenizer.encode(prompt, return_tensors="pt")
+    tokens = tokenizer(prompt, return_tensors="pt")["input_ids"]
     tokens = tokens.to(device)
     with torch.no_grad():
         logits = model(tokens)
@@ -100,7 +100,6 @@ def compute_pronoun_probs(model, tokenizer, prompt: str) -> Tuple[float, float]:
 
 
 def compute_gld_scores(model, tokenizer, prompts: List[PromptExample]) -> List[Dict[str, Any]]:
-    """Compute GLD score per prompt (per Dong et al. 2024 / Hegde 2024)."""
     scores: List[Dict[str, Any]] = []
     for example in tqdm(prompts, desc="Computing GLD"):
         try:
@@ -141,11 +140,15 @@ def collect_activation_dataset(model, tokenizer, dataset_name: str, layer: int, 
 
     tokenized: List[torch.Tensor] = []
     for entry in scored_entries:
-        tokens = tokenizer.encode(entry["prompt"], return_tensors="pt", max_length=128, truncation=True)
+        tokens = tokenizer(
+            entry["prompt"],
+            return_tensors="pt",
+            max_length=128,
+            truncation=True,
+        )["input_ids"]
         tokenized.append(tokens.squeeze(0))
 
     activations_dict = collect_activations(model, tokenized, layer_indices=[layer], position="last")
     activations = activations_dict[layer]
     gld_scores = np.array([entry["gld"] for entry in scored_entries], dtype=np.float32)
     return activations, gld_scores, scored_entries
-
