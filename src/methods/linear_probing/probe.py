@@ -66,12 +66,15 @@ def collect_activations(model: HookedTransformer, tokenized_prompts: List[torch.
         
         for layer in layer_indices:
             if saved_activations[layer] is not None:
-                layer_act = saved_activations[layer][0] # saved_activations[layer] is [batch=1, seq_len, hidden_dim]
+                layer_act = saved_activations[layer]
+                
+                if layer_act.dim() == 3:
+                    layer_act = layer_act[0]
                 
                 if position == "last":
-                    vec = layer_act[0, -1, :].numpy()   # last token position
+                    vec = layer_act[-1, :].numpy()
                 elif position == "mean":
-                    vec = layer_act[0].mean(dim=0).numpy()  # mean over sequence
+                    vec = layer_act.mean(dim=0).numpy()
                 else:
                     raise ValueError(f"Invalid position: {position}")
                 
@@ -321,7 +324,7 @@ def train_layer_probes(
 def main():
     """Run linear probing experiments for both datasets."""
     parser = argparse.ArgumentParser(description="Linear probing analysis for bias detection")
-    parser.add_argument("--model", type=str, default="gpt2-medium", choices=["gpt2-medium", "gpt2-large"], help="Model to use (default: gpt2-medium)")
+    parser.add_argument("--model", type=str, default="gpt2-medium", choices=["gpt2-medium", "gpt2-large", "gpt-neo-125M"], help="Model to use (default: gpt2-medium)")
     parser.add_argument("--no-cache", action="store_true", help="Disable caching and recompute everything from scratch")
     parser.add_argument("--cache-dir", type=str, default="runs/linear_probing/cache", help="Directory to store/load cached activations (default: runs/linear_probing/cache)")
     parser.add_argument("--output-dir", type=str, default="results", help="Directory to save results (default: results)")
