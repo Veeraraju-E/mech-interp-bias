@@ -1,7 +1,6 @@
 """Linear probes: train logistic regression on activations to predict bias."""
 import os
 import sys
-import argparse
 import torch
 import numpy as np
 from typing import Dict, List, Tuple, Any, Optional
@@ -10,11 +9,19 @@ from tqdm import tqdm
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, roc_auc_score
 from transformer_lens import HookedTransformer
+import typer
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.model_setup import *
 from src.data_loader import *
 from src.cache_utils import *
+
+app = typer.Typer(help="Linear probing analysis for bias detection")
+console = Console()
 
 
 class ProbeResults:
@@ -242,11 +249,11 @@ def train_layer_probes(
 ) -> ProbeResults:
     """Train linear probes on each layer's residual stream activations."""
 
-    print(f"Training linear probes for {dataset_name}...")
+    console.print(f"[cyan]Training linear probes[/cyan] for [bold]{dataset_name}[/bold]...")
     
     model_name = get_model_name(model)
     prompts, labels = prepare_biased_neutral_pairs(examples, dataset_name, tokenizer)
-    print(f"Prepared {len(prompts)} prompts ({np.sum(labels)} biased, {len(labels) - np.sum(labels)} neutral)")
+    console.print(f"[green]✓[/green] Prepared {len(prompts)} prompts ([dim]{np.sum(labels)} biased, {len(labels) - np.sum(labels)} neutral[/dim])")
     
     n_layers = model.cfg.n_layers
     layer_indices = list(range(n_layers + 1))
@@ -260,7 +267,7 @@ def train_layer_probes(
             activations_dict, cached_labels = cached_data
             if cached_labels is not None:
                 labels = cached_labels
-                print(f"Loaded cached activations for {len(labels)} examples")
+                console.print(f"[green]✓[/green] Loaded cached activations for {len(labels)} examples")
     
     if activations_dict is None:
         tokenized = []
@@ -268,8 +275,8 @@ def train_layer_probes(
             tokens = tokenizer.encode(p, return_tensors="pt").squeeze(0)
             tokenized.append(tokens)
         
-        print("Collecting activations...")
-        activations_dict = collect_activations(model, tokenized, layer_indices, position=position)
+        with console.status("[bold yellow]Collecting activations..."):
+            activations_dict = collect_activations(model, tokenized, layer_indices, position=position)
         
         if cache_dir and use_cache:
             cache_activations(cache_dir, model_name, dataset_name, activations_dict, labels, position, use_cache)
@@ -286,25 +293,36 @@ def train_layer_probes(
     results = ProbeResults()
     results.labels = labels
     
-    print("Training probes for each layer...")
-    for layer in tqdm(layer_indices, desc="Training probes"):
-        activation_vecs = activations_dict[layer]
-        
-        if len(activation_vecs) == 0:
-            print(f"Warning: Layer {layer} has no activations")
-            continue
-        
-        if len(activation_vecs) != n_examples:
-            print(f"Warning: Layer {layer} has {len(activation_vecs)} examples, expected {n_examples}")
-            continue
-        
-        results.activations[layer] = activation_vecs
-        
-        probe, acc, auc = train_probe(activation_vecs, labels, train_indices, test_indices)
-        
-        results.layer_probes[layer] = probe
-        results.layer_accuracies[layer] = float(acc)
-        results.layer_aucs[layer] = float(auc)
+    console.print("[cyan]Training probes for each layer...[/cyan]")
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TaskProgressColumn(),
+        console=console
+    ) as progress:
+        task = progress.add_task("Training probes...", total=len(layer_indices))
+        for layer in layer_indices:
+            activation_vecs = activations_dict[layer]
+            
+            if len(activation_vecs) == 0:
+                console.print(f"[yellow]Warning:[/yellow] Layer {layer} has no activations")
+                progress.update(task, advance=1)
+                continue
+            
+            if len(activation_vecs) != n_examples:
+                console.print(f"[yellow]Warning:[/yellow] Layer {layer} has {len(activation_vecs)} examples, expected {n_examples}")
+                progress.update(task, advance=1)
+                continue
+            
+            results.activations[layer] = activation_vecs
+            
+            probe, acc, auc = train_probe(activation_vecs, labels, train_indices, test_indices)
+            
+            results.layer_probes[layer] = probe
+            results.layer_accuracies[layer] = float(acc)
+            results.layer_aucs[layer] = float(auc)
+            progress.update(task, advance=1)
     
     if output_dir:
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -314,62 +332,93 @@ def train_layer_probes(
         with open(results_file, "w") as f:
             json.dump(results.to_dict(), f, indent=2)
     
-    print("\nLayer probe accuracies:")
-    for layer, acc in results.layer_accuracies.items():
-        print(f"  Layer {layer}: Accuracy={acc:.4f}")
+    table = Table(title="Layer Probe Accuracies", show_header=True, header_style="bold magenta")
+    table.add_column("Layer", style="cyan")
+    table.add_column("Accuracy", style="green", justify="right")
+    table.add_column("AUC", style="blue", justify="right")
+    for layer in sorted(results.layer_accuracies.keys()):
+        acc = results.layer_accuracies[layer]
+        auc = results.layer_aucs.get(layer, 0.0)
+        table.add_row(str(layer), f"{acc:.4f}", f"{auc:.4f}")
+    console.print(table)
     
     return results
 
 
-def main():
+@app.command()
+def main(
+    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use"),
+    no_cache: bool = typer.Option(False, "--no-cache", help="Disable caching and recompute everything"),
+    cache_dir: str = typer.Option("runs/linear_probing/cache", "--cache-dir", help="Directory to store/load cached activations"),
+    output_dir: str = typer.Option("results", "--output-dir", "-o", help="Directory to save results"),
+    position: str = typer.Option("last", "--position", "-p", help="Position to extract activations from"),
+):
     """Run linear probing experiments for both datasets."""
-    parser = argparse.ArgumentParser(description="Linear probing analysis for bias detection")
-    parser.add_argument("--model", type=str, default="gpt2-medium", choices=["gpt2-medium", "gpt2-large", "gpt-neo-125M"], help="Model to use (default: gpt2-medium)")
-    parser.add_argument("--no-cache", action="store_true", help="Disable caching and recompute everything from scratch")
-    parser.add_argument("--cache-dir", type=str, default="runs/linear_probing/cache", help="Directory to store/load cached activations (default: runs/linear_probing/cache)")
-    parser.add_argument("--output-dir", type=str, default="results", help="Directory to save results (default: results)")
-    parser.add_argument("--position", type=str, default="last", choices=["last", "mean"], help="Position to extract activations from (default: last)")
-    args = parser.parse_args()
+    valid_models = ["gpt2-medium", "gpt2-large", "gpt-neo-125M"]
+    valid_positions = ["last", "mean"]
     
-    print("\nInitializing model...")
-    print(f"Using model: {args.model}")
-    device = setup_device()
-    model = load_model(args.model)
-    model.to(device)
-    tokenizer = get_tokenizer(args.model)
-    model_name = get_model_name(model)
+    if model not in valid_models:
+        console.print(f"[red]Error:[/red] Invalid model '{model}'. Must be one of {valid_models}")
+        raise typer.Exit(1)
     
-    output_dir = Path(args.output_dir) / model_name
-    output_dir.mkdir(parents=True, exist_ok=True)
+    if position not in valid_positions:
+        console.print(f"[red]Error:[/red] Invalid position '{position}'. Must be one of {valid_positions}")
+        raise typer.Exit(1)
     
-    cache_dir = Path(args.cache_dir) if not args.no_cache else None
-    use_cache = not args.no_cache
+    console.print(Panel.fit("[bold cyan]Linear Probing Analysis[/bold cyan]", style="bold blue"))
     
-    if cache_dir:
-        print(f"Cache directory: {cache_dir}")
-        if use_cache:
-            print("Caching enabled")
-        else:
-            print("Caching disabled")
+    with console.status("[bold yellow]Initializing model..."):
+        device = setup_device()
+        model_obj = load_model(model)
+        model_obj.to(device)
+    tokenizer = get_tokenizer(model)
+    model_name = get_model_name(model_obj)
     
-    print("Loading datasets...")
-    stereoset_examples = load_stereoset()
-    winogender_examples = load_winogender()
+    output_path = Path(output_dir) / model_name
+    output_path.mkdir(parents=True, exist_ok=True)
     
-    print(f"Loaded {len(stereoset_examples)} StereoSet examples")
-    print(f"Loaded {len(winogender_examples)} WinoGender examples")
+    cache_path = Path(cache_dir) if not no_cache else None
+    use_cache = not no_cache
+    
+    table = Table(title="Configuration", show_header=True, header_style="bold magenta")
+    table.add_column("Parameter", style="cyan")
+    table.add_column("Value", style="green")
+    table.add_row("Model", model)
+    table.add_row("Position", position)
+    table.add_row("Output Dir", str(output_path))
+    table.add_row("Cache", "Enabled" if use_cache else "Disabled")
+    if cache_path:
+        table.add_row("Cache Dir", str(cache_path))
+    console.print(table)
+    console.print()
+    
+    with console.status("[bold yellow]Loading datasets..."):
+        stereoset_examples = load_stereoset()
+        winogender_examples = load_winogender()
+    
+    console.print(f"[green]✓[/green] Loaded {len(stereoset_examples)} StereoSet examples")
+    console.print(f"[green]✓[/green] Loaded {len(winogender_examples)} WinoGender examples")
+    console.print()
     
     datasets = [("stereoset_race", None), ("stereoset_gender", None), ("winogender", winogender_examples)]
     
     all_results = {}
     
     for dataset_name, examples in datasets:
-        print(f"\n{'='*60}")
-        print(f"Running linear probing on {dataset_name}")
-        print(f"{'='*60}")
+        console.print(Panel(f"[bold cyan]Running linear probing on {dataset_name}[/bold cyan]", style="bold blue"))
 
-        results = train_layer_probes(model=model, examples=examples, dataset_name=dataset_name, tokenizer=tokenizer, output_dir=output_dir, train_split=0.8, position=args.position, cache_dir=cache_dir, use_cache=use_cache)
-        results_dict =  {
+        results = train_layer_probes(
+            model=model_obj, 
+            examples=examples, 
+            dataset_name=dataset_name, 
+            tokenizer=tokenizer, 
+            output_dir=output_path, 
+            train_split=0.8, 
+            position=position, 
+            cache_dir=cache_path, 
+            use_cache=use_cache
+        )
+        results_dict = {
             "layer_accuracies": results.layer_accuracies,
             "layer_aucs": results.layer_aucs,
             "num_examples": len(results.labels) if results.labels is not None else 0,
@@ -377,18 +426,16 @@ def main():
         }
 
         all_results[dataset_name] = results_dict
+        console.print()
     
-    summary_file = output_dir / "linear_probing_summary.json"
+    summary_file = output_path / "linear_probing_summary.json"
     with open(summary_file, "w") as f:
         json.dump(all_results, f, indent=2)
     
-    print(f"\n{'='*60}")
-    print("Linear probing experiments complete!")
-    print(f"Results saved to {output_dir}")
-    if cache_dir and use_cache:
-        print(f"Cache saved to {cache_dir}")
-    print(f"{'='*60}")
+    console.print(Panel.fit(f"[bold green]✓ Linear probing experiments complete![/bold green]\nResults saved to [cyan]{output_path}[/cyan]", style="bold green"))
+    if cache_path and use_cache:
+        console.print(f"[dim]Cache saved to {cache_path}[/dim]")
 
 
 if __name__ == "__main__":
-    main()
+    app()

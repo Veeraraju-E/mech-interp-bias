@@ -1,33 +1,13 @@
-"""Bias metric computation for StereoSet and WinoGender.
-
-Following methodologies from:
-- StereoSet: Nadeem et al. (2021) - SS score via next token log probabilities
-- WinoGender: Rudinger et al. (2018) - accuracy difference for pronoun resolution
-- Layered Bias: Prakash & Lee (2023) - layerwise bias analysis
-"""
-
 import torch
 import torch.nn.functional as F
 from typing import List, Dict, Any, Sequence
 from transformer_lens import HookedTransformer
 from transformers import GPT2Tokenizer
 
-from .data_loader import (
-    build_stereoset_triplets,
-    build_winogender_pairs,
-    find_first_difference_tokens
-)
+from .data_loader import *
 
 
-def compute_stereoset_score(
-    model: HookedTransformer,
-    examples: List[Dict[str, Any]],
-    tokenizer: GPT2Tokenizer
-) -> float:
-    """
-    Compute StereoSet SS (Nadeem et al., 2021) as the average logit gap between
-    stereotype vs antistereotype continuations for every bias type.
-    """
+def compute_stereoset_score(model: HookedTransformer, examples: List[Dict[str, Any]], tokenizer: GPT2Tokenizer) -> float:
     triplets = build_stereoset_triplets(examples)
     if not triplets:
         return 0.0
@@ -65,15 +45,7 @@ def compute_stereoset_score(
     return sum(scores) / len(scores) if scores else 0.0
 
 
-def compute_winogender_score(
-    model: HookedTransformer,
-    examples: List[Dict[str, Any]],
-    tokenizer: GPT2Tokenizer
-) -> float:
-    """
-    Compute WinoGender bias following Rudinger et al. (2018):
-    log-prob gap between male vs female pronouns for each paired template.
-    """
+def compute_winogender_score(model: HookedTransformer, examples: List[Dict[str, Any]], tokenizer: GPT2Tokenizer) -> float:
     pairs = build_winogender_pairs(examples)
     if not pairs:
         return 0.0
@@ -104,11 +76,7 @@ def compute_winogender_score(
     return sum(scores) / len(scores) if scores else 0.0
 
 
-def _logprob_difference(
-    log_probs: torch.Tensor,
-    positive_ids: Sequence[int],
-    negative_ids: Sequence[int]
-) -> torch.Tensor:
+def _logprob_difference(log_probs: torch.Tensor, positive_ids: Sequence[int], negative_ids: Sequence[int]) -> torch.Tensor:
     if not positive_ids or not negative_ids:
         return torch.tensor(0.0, device=log_probs.device, requires_grad=True)
     
@@ -120,12 +88,6 @@ def _logprob_difference(
 
 
 def build_bias_metric_fn(dataset_name: str):
-    """
-    Construct a bias metric closure for activation patching / ablations.
-    
-    The closure consumes logits and per-example metadata, mirroring the
-    attribution objectives in Activation Patching (Nanda et al., 2023).
-    """
     def metric_fn(logits: torch.Tensor, metadata: Dict[str, Any]) -> torch.Tensor:
         if logits.dim() == 3:
             next_token_logits = logits[0, -1, :]
@@ -151,24 +113,7 @@ def build_bias_metric_fn(dataset_name: str):
     return metric_fn
 
 
-def compute_bias_metric(
-    model: HookedTransformer,
-    examples: List[Dict[str, Any]],
-    dataset_name: str,
-    tokenizer: GPT2Tokenizer
-) -> float:
-    """
-    Compute bias metric for a dataset.
-    
-    Args:
-        model: HookedTransformer model
-        examples: List of examples
-        dataset_name: "stereoset" or "winogender"
-        tokenizer: Tokenizer instance
-    
-    Returns:
-        Bias score
-    """
+def compute_bias_metric(model: HookedTransformer, examples: List[Dict[str, Any]], dataset_name: str, tokenizer: GPT2Tokenizer) -> float:
     if dataset_name.lower() == "stereoset":
         return compute_stereoset_score(model, examples, tokenizer)
     elif dataset_name.lower() == "winogender":

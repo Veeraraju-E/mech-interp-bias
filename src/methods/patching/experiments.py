@@ -1,17 +1,25 @@
 """Main experiment for Activation Patching."""
 
 import json
-import argparse
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 import sys
 import os
+import typer
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.progress import Progress, SpinnerColumn, TextColumn
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.bias_metrics import compute_bias_metric, build_bias_metric_fn
 from src.model_setup import *
 from src.data_loader import *
-from src.methods.activation_patching import *
+from src.methods.patching import *
 from src.cache_utils import *
+
+app = typer.Typer(help="Activation patching experiments for bias analysis")
+console = Console()
 
 def _prepare_stereoset_examples(
     examples: List[Dict[str, Any]],
@@ -92,9 +100,9 @@ def prepare_dataset_inputs(
     if dataset_name == "stereoset":
         return _prepare_stereoset_examples(examples, tokenizer)
     elif dataset_name == "stereoset_race":
-        return load_stereoset_acdc_pairs("race")
+        return get_acdc_stereoset_pairs("race")
     elif dataset_name == "stereoset_gender":
-        return load_stereoset_acdc_pairs("gender")
+        return get_acdc_stereoset_pairs("gender")
     elif dataset_name == "winogender":
         return _prepare_winogender_examples(examples, tokenizer)
     else:
@@ -110,9 +118,9 @@ def run_attribution_patching_experiment(
     use_cache: bool = True
 ) -> Dict[str, Any]:
     """Run attribution patching using dataset-specific prepared inputs."""
-    print(f"Running attribution patching experiment on {dataset_name} ({len(prepared_examples)} prompts)...")
+    console.print(f"[cyan]Running attribution patching[/cyan] on [bold]{dataset_name}[/bold] ([dim]{len(prepared_examples)} prompts[/dim])...")
     if not prepared_examples:
-        print("Warning: no prepared examples found; skipping attribution patching.")
+        console.print("[yellow]Warning:[/yellow] no prepared examples found; skipping attribution patching.")
         return {"attributions": {}, "ranked_edges": []}
     
     model_name = get_model_name(model)
@@ -122,10 +130,11 @@ def run_attribution_patching_experiment(
         cached_attributions = load_cached_attribution_results(cache_dir, model_name, dataset_name)
         if cached_attributions is not None:
             attributions = cached_attributions
-            print("Using cached attribution results")
+            console.print("[green]✓[/green] Using cached attribution results")
     
     if attributions is None:
-        attributions = attribution_patch(model, prepared_examples, bias_metric_fn)
+        with console.status("[bold yellow]Computing attributions..."):
+            attributions = attribution_patch(model, prepared_examples, bias_metric_fn)
         
         if cache_dir and use_cache:
             cache_attribution_results(cache_dir, model_name, dataset_name, attributions, use_cache)
@@ -136,9 +145,12 @@ def run_attribution_patching_experiment(
     
     ranked_edges = sorted(attributions.items(), key=lambda x: abs(x[1]), reverse=True)
     
-    print(f"Top 10 attribution edges:")
+    table = Table(title="Top 10 Attribution Edges", show_header=True, header_style="bold magenta")
+    table.add_column("Hook Name", style="cyan")
+    table.add_column("Score", style="green", justify="right")
     for hook_name, score in ranked_edges[:10]:
-        print(f"  {hook_name}: {score:.4f}")
+        table.add_row(hook_name, f"{score:.4f}")
+    console.print(table)
     
     return {
         "attributions": attributions,
@@ -156,9 +168,9 @@ def run_ablation_experiment(
     use_cache: bool = True
 ) -> Dict[str, Any]:
     """Run head/MLP ablations using the same prepared prompts as attribution runs."""
-    print(f"Running ablation experiment on {dataset_name}...")
+    console.print(f"[cyan]Running ablation experiment[/cyan] on [bold]{dataset_name}[/bold]...")
     if not prepared_examples:
-        print("Warning: no prepared examples found; skipping ablations.")
+        console.print("[yellow]Warning:[/yellow] no prepared examples found; skipping ablations.")
         return {
             "head_impacts": {},
             "mlp_impacts": {},
@@ -185,16 +197,16 @@ def run_ablation_experiment(
                 else:
                     head_impacts[k] = v
             mlp_impacts = {int(k) if isinstance(k, str) else k: v for k, v in cached_mlps.items()}
-            print("Using cached ablation results")
+            console.print("[green]✓[/green] Using cached ablation results")
     
     if head_impacts is None or mlp_impacts is None:
         if head_impacts is None:
-            print("Scanning all attention heads...")
-            head_impacts = scan_all_heads(model, prepared_examples, bias_metric_fn)
+            with console.status("[bold yellow]Scanning all attention heads..."):
+                head_impacts = scan_all_heads(model, prepared_examples, bias_metric_fn)
         
         if mlp_impacts is None:
-            print("Scanning all MLPs...")
-            mlp_impacts = scan_all_mlps(model, prepared_examples, bias_metric_fn)
+            with console.status("[bold yellow]Scanning all MLPs..."):
+                mlp_impacts = scan_all_mlps(model, prepared_examples, bias_metric_fn)
         
         if cache_dir and use_cache:
             head_dict = {f"{layer}_{head}": score for (layer, head), score in head_impacts.items()}
@@ -212,13 +224,20 @@ def run_ablation_experiment(
     ranked_heads = sorted(head_impacts.items(), key=lambda x: abs(x[1]), reverse=True)
     ranked_mlps = sorted(mlp_impacts.items(), key=lambda x: abs(x[1]), reverse=True)
     
-    print(f"Top 10 biased heads:")
+    head_table = Table(title="Top 10 Biased Heads", show_header=True, header_style="bold magenta")
+    head_table.add_column("Layer", style="cyan")
+    head_table.add_column("Head", style="cyan")
+    head_table.add_column("Impact", style="green", justify="right")
     for (layer, head), impact in ranked_heads[:10]:
-        print(f"  Layer {layer}, Head {head}: {impact:.4f}")
+        head_table.add_row(str(layer), str(head), f"{impact:.4f}")
+    console.print(head_table)
     
-    print(f"Top 10 biased MLPs:")
+    mlp_table = Table(title="Top 10 Biased MLPs", show_header=True, header_style="bold magenta")
+    mlp_table.add_column("Layer", style="cyan")
+    mlp_table.add_column("Impact", style="green", justify="right")
     for layer, impact in ranked_mlps[:10]:
-        print(f"  Layer {layer}: {impact:.4f}")
+        mlp_table.add_row(str(layer), f"{impact:.4f}")
+    console.print(mlp_table)
     
     head_impacts_json = {f"{layer}_{head}": score for (layer, head), score in head_impacts.items()}
     
@@ -230,146 +249,121 @@ def run_ablation_experiment(
     }
 
 
-def main():
-    """Main experiment orchestration."""
-    parser = argparse.ArgumentParser(description="Activation patching experiments for bias analysis")
-    parser.add_argument(
-        "--model",
-        type=str,
-        default="gpt2-medium",
-        choices=["gpt2-medium", "gpt2-large", "gpt-neo-125M"],
-        help="Model to use (default: gpt2-medium)"
-    )
-    parser.add_argument(
-        "--no-cache",
-        action="store_true",
-        help="Disable caching and recompute everything from scratch"
-    )
-    parser.add_argument(
-        "--cache-dir",
-        type=str,
-        default="runs/activation_patching/cache",
-        help="Directory to store/load cached components (default: runs/activation_patching/cache)"
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        default="results",
-        help="Directory to save results (default: results)"
-    )
-    
-    args = parser.parse_args()
-    
-    print("Initializing model and datasets...")
-    print(f"Using model: {args.model}")
+@app.command()
+def main(
+    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M"),
+    no_cache: bool = typer.Option(False, "--no-cache", help="Disable caching and recompute everything"),
+    cache_dir: str = typer.Option("runs/activation_patching/cache", "--cache-dir", help="Directory to store/load cached components"),
+    output_dir: str = typer.Option("results", "--output-dir", "-o", help="Directory to save results: results/<model>/activation_patching"),
+):
+    """Main experiment orchestration for activation patching."""
+    console.print(Panel.fit("[bold cyan]Activation Patching Experiments[/bold cyan]", style="bold blue"))
     
     device = setup_device()
-    model = load_model(args.model)
-    model = load_model(args.model)
-    model.to(device)
-    tokenizer = get_tokenizer(args.model)
+    with console.status("[bold yellow]Loading model..."):
+        model_obj = load_model(model)
+        model_obj.to(device)
+    tokenizer = get_tokenizer(model)
+    model_name = get_model_name(model_obj)
     
-    model_name = get_model_name(model)
-    tokenizer = get_tokenizer(args.model)
-    model_name = get_model_name(model)
+    output_path = Path(output_dir) / model_name
+    output_path.mkdir(parents=True, exist_ok=True)
     
-    output_dir = Path(args.output_dir) / model_name
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_dir = Path(args.output_dir) / model_name
-    output_dir.mkdir(parents=True, exist_ok=True)
+    cache_path = Path(cache_dir) if not no_cache else None
+    use_cache = not no_cache
     
-    cache_dir = Path(args.cache_dir) if not args.no_cache else None
-    use_cache = not args.no_cache
+    table = Table(title="Configuration", show_header=True, header_style="bold magenta")
+    table.add_column("Parameter", style="cyan")
+    table.add_column("Value", style="green")
+    table.add_row("Model", model)
+    table.add_row("Output Dir", str(output_path))
+    table.add_row("Cache", "Enabled" if use_cache else "Disabled")
+    if cache_path:
+        table.add_row("Cache Dir", str(cache_path))
+    console.print(table)
+    console.print()
     
-    if cache_dir:
-        print(f"Cache directory: {cache_dir}")
-        if use_cache:
-            print("Caching enabled - will load from cache if available")
-        else:
-            print("Caching disabled - will recompute everything")
+    with console.status("[bold yellow]Loading datasets..."):
+        stereoset_examples = load_stereoset()
+        winogender_examples = load_winogender()
     
-    print("Loading datasets...")
-    stereoset_examples = load_stereoset()
-    winogender_examples = load_winogender()
+    console.print(f"[green]✓[/green] Loaded {len(stereoset_examples)} StereoSet examples")
+    console.print(f"[green]✓[/green] Loaded {len(winogender_examples)} WinoGender examples")
+    console.print()
     
-    print(f"Loaded {len(stereoset_examples)} StereoSet examples")
-    print(f"Loaded {len(winogender_examples)} WinoGender examples")
-    
-    print("\nComputing baseline bias metrics...")
+    console.print("[cyan]Computing baseline bias metrics...[/cyan]")
     baseline_scores = {}
     
     for bias_type in ["race", "gender"]:
         dataset_name = f"stereoset_{bias_type}"
         filtered_examples = [ex for ex in stereoset_examples if ex.get("bias_type", "").lower() == bias_type]
         
-        if cache_dir and use_cache:
-            cached_scores = load_cached_bias_scores(cache_dir, model_name, dataset_name)
+        if cache_path and use_cache:
+            cached_scores = load_cached_bias_scores(cache_path, model_name, dataset_name)
             if cached_scores is not None:
                 baseline_scores[dataset_name] = cached_scores.get("baseline", None)
-                print(f"Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
+                console.print(f"[green]✓[/green] Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
         
         if dataset_name not in baseline_scores or baseline_scores[dataset_name] is None:
             if filtered_examples:
-                baseline = compute_bias_metric(model, filtered_examples, "stereoset", tokenizer)
+                baseline = compute_bias_metric(model_obj, filtered_examples, "stereoset", tokenizer)
                 baseline_scores[dataset_name] = baseline
-                print(f"{dataset_name.capitalize()} baseline bias: {baseline:.4f}")
+                console.print(f"[cyan]{dataset_name.capitalize()}[/cyan] baseline bias: [bold]{baseline:.4f}[/bold]")
                 
-                if cache_dir and use_cache:
-                    cache_bias_scores(cache_dir, model_name, dataset_name, {"baseline": baseline}, use_cache)
+                if cache_path and use_cache:
+                    cache_bias_scores(cache_path, model_name, dataset_name, {"baseline": baseline}, use_cache)
             else:
                 baseline_scores[dataset_name] = 0.0
-                print(f"Warning: No examples found for {dataset_name}, setting baseline to 0.0")
+                console.print(f"[yellow]Warning:[/yellow] No examples found for {dataset_name}, setting baseline to 0.0")
     
     dataset_name = "winogender"
-    if cache_dir and use_cache:
-        cached_scores = load_cached_bias_scores(cache_dir, model_name, dataset_name)
+    if cache_path and use_cache:
+        cached_scores = load_cached_bias_scores(cache_path, model_name, dataset_name)
         if cached_scores is not None:
             baseline_scores[dataset_name] = cached_scores.get("baseline", None)
-            print(f"Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
+            console.print(f"[green]✓[/green] Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
     
     if dataset_name not in baseline_scores or baseline_scores[dataset_name] is None:
-        baseline = compute_bias_metric(model, winogender_examples, dataset_name, tokenizer)
+        baseline = compute_bias_metric(model_obj, winogender_examples, dataset_name, tokenizer)
         baseline_scores[dataset_name] = baseline
-        print(f"{dataset_name.capitalize()} baseline bias: {baseline:.4f}")
+        console.print(f"[cyan]{dataset_name.capitalize()}[/cyan] baseline bias: [bold]{baseline:.4f}[/bold]")
         
-        if cache_dir and use_cache:
-            cache_bias_scores(cache_dir, model_name, dataset_name, {"baseline": baseline}, use_cache)
+        if cache_path and use_cache:
+            cache_bias_scores(cache_path, model_name, dataset_name, {"baseline": baseline}, use_cache)
     
     datasets = [("stereoset_race", None), ("stereoset_gender", None), ("winogender", winogender_examples)]
     
     all_results = {}
     
     for dataset_name, examples in datasets:
-        print(f"\n{'='*60}")
-        print(f"Running experiments on {dataset_name}")
-        print(f"{'='*60}")
+        console.print(Panel(f"[bold cyan]Running experiments on {dataset_name}[/bold cyan]", style="bold blue"))
         
         prepared_examples = None
         
-        if cache_dir and use_cache:
-            cached_examples = load_cached_prepared_examples(cache_dir, model_name, dataset_name)
+        if cache_path and use_cache:
+            cached_examples = load_cached_prepared_examples(cache_path, model_name, dataset_name)
             if cached_examples is not None:
                 prepared_examples = cached_examples
-                print(f"Loaded {len(prepared_examples)} cached prepared examples")
+                console.print(f"[green]✓[/green] Loaded {len(prepared_examples)} cached prepared examples")
         
         if prepared_examples is None:
             if dataset_name in ["stereoset_race", "stereoset_gender"]:
                 prepared_examples = prepare_dataset_inputs(dataset_name, None, tokenizer)
             else:
                 prepared_examples = prepare_dataset_inputs(dataset_name, examples, tokenizer)
-            if cache_dir and use_cache:
-                cache_prepared_examples(cache_dir, model_name, dataset_name, prepared_examples, use_cache)
+            if cache_path and use_cache:
+                cache_prepared_examples(cache_path, model_name, dataset_name, prepared_examples, use_cache)
         
         bias_metric_fn = build_bias_metric_fn("stereoset" if "stereoset" in dataset_name else dataset_name)
         
         attribution_results = run_attribution_patching_experiment(
-            model, dataset_name, prepared_examples, bias_metric_fn, output_dir,
-            cache_dir=cache_dir, use_cache=use_cache
+            model_obj, dataset_name, prepared_examples, bias_metric_fn, output_path,
+            cache_dir=cache_path, use_cache=use_cache
         )
         
         ablation_results = run_ablation_experiment(
-            model, dataset_name, prepared_examples, bias_metric_fn, output_dir,
-            cache_dir=cache_dir, use_cache=use_cache
+            model_obj, dataset_name, prepared_examples, bias_metric_fn, output_path,
+            cache_dir=cache_path, use_cache=use_cache
         )
         
         baseline = baseline_scores.get(dataset_name, 0.0)
@@ -378,18 +372,17 @@ def main():
             "attribution_patching": attribution_results,
             "ablations": ablation_results
         }
+        console.print()
     
-    summary_file = output_dir / "summary.json"
+    summary_file = output_path / "summary.json"
     with open(summary_file, "w") as f:
         json.dump(all_results, f, indent=2)
     
-    print(f"\n{'='*60}")
-    print("Experiments complete! Results saved to", output_dir)
-    if cache_dir and use_cache:
-        print(f"Cache saved to {cache_dir}")
-    print(f"{'='*60}")
+    console.print(Panel.fit(f"[bold green]✓ Experiments complete![/bold green]\nResults saved to [cyan]{output_path}[/cyan]", style="bold green"))
+    if cache_path and use_cache:
+        console.print(f"[dim]Cache saved to {cache_path}[/dim]")
 
 
 if __name__ == "__main__":
-    main()
+    app()
 

@@ -10,8 +10,6 @@ class SparseAutoencoder(nn.Module):
 
     def __init__(self, d_model: int, d_latent: int, k_sparse: int, device: torch.device) -> None:
         super().__init__()
-        if k_sparse <= 0 or k_sparse > d_latent:
-            raise ValueError("k_sparse must be in (0, d_latent].")
         self.d_model = d_model
         self.d_latent = d_latent
         self.k_sparse = k_sparse
@@ -55,6 +53,5 @@ class SparseAutoencoder(nn.Module):
         return reconstruction
 
     def compute_loss(self, activations: torch.Tensor) -> Tuple[torch.Tensor, float]:
-        reconstruction = self.forward(activations, apply_sparsity=True)
-        recon_loss = F.mse_loss(reconstruction, activations)
+        recon_loss = F.mse_loss(self.forward(activations, apply_sparsity=True), activations)
         return recon_loss, recon_loss.item()

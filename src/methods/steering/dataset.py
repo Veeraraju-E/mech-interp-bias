@@ -19,52 +19,30 @@ class PromptExample:
 
 
 def _build_stereoset_prompts(max_examples: Optional[int] = None) -> List[PromptExample]:
-    examples = load_stereoset()
-    pairs = get_stereoset_pairs(examples)
-    gender_pairs = [p for p in pairs if p.get("bias_type", "").lower() == "gender"]
-
-    prompts: List[PromptExample] = []
-    for pair in gender_pairs:
-        context = pair.get("context_prefix") or pair.get("context") or ""
-        context = context.strip()
-        if not context:
-            continue
-        prompts.append(
-            PromptExample(
+    pairs = [p for p in get_stereoset_pairs(load_stereoset()) if p.get("bias_type", "").lower() == "gender"]
+    prompts = []
+    for pair in pairs[:max_examples] if max_examples else pairs:
+        context = (pair.get("context_prefix") or pair.get("context") or "").strip()
+        if context:
+            prompts.append(PromptExample(
                 prompt=context,
                 source="stereoset",
-                metadata={
-                    "target": pair.get("target", ""),
-                    "context_suffix": pair.get("context_suffix", ""),
-                },
-            )
-        )
-        if max_examples and len(prompts) >= max_examples:
-            break
+                metadata={"target": pair.get("target", ""), "context_suffix": pair.get("context_suffix", "")},
+            ))
     return prompts
 
 
 def _build_winogender_prompts(max_examples: Optional[int] = None) -> List[PromptExample]:
-    raw_examples = load_winogender()
-    pairs = build_winogender_pairs(raw_examples)
-
-    prompts: List[PromptExample] = []
-    for pair in pairs:
+    pairs = build_winogender_pairs(load_winogender())
+    prompts = []
+    for pair in pairs[:max_examples] if max_examples else pairs:
         prompt = pair.get("prompt", "").strip()
-        if not prompt:
-            continue
-        prompts.append(
-            PromptExample(
+        if prompt:
+            prompts.append(PromptExample(
                 prompt=prompt,
                 source="winogender",
-                metadata={
-                    "profession": pair.get("profession", ""),
-                    "word": pair.get("word", ""),
-                },
-            )
-        )
-        if max_examples and len(prompts) >= max_examples:
-            break
+                metadata={"profession": pair.get("profession", ""), "word": pair.get("word", "")},
+            ))
     return prompts
 
 
@@ -100,24 +78,17 @@ def compute_pronoun_probs(model, tokenizer, prompt: str) -> Tuple[float, float]:
 
 
 def compute_gld_scores(model, tokenizer, prompts: List[PromptExample]) -> List[Dict[str, Any]]:
-    scores: List[Dict[str, Any]] = []
+    scores = []
     for example in tqdm(prompts, desc="Computing GLD"):
         try:
             male_prob, female_prob = compute_pronoun_probs(model, tokenizer, example.prompt)
+            gld = abs(male_prob - female_prob) / (male_prob + female_prob + 1e-8)
+            scores.append({
+                "prompt": example.prompt, "gld": gld, "male_prob": male_prob, "female_prob": female_prob,
+                "source": example.source, "metadata": example.metadata,
+            })
         except ValueError:
             continue
-        denom = male_prob + female_prob + 1e-8
-        gld = abs(male_prob - female_prob) / denom
-        scores.append(
-            {
-                "prompt": example.prompt,
-                "gld": gld,
-                "male_prob": male_prob,
-                "female_prob": female_prob,
-                "source": example.source,
-                "metadata": example.metadata,
-            }
-        )
     return scores
 
 
@@ -138,15 +109,10 @@ def collect_activation_dataset(model, tokenizer, dataset_name: str, layer: int, 
     if not scored_entries:
         raise RuntimeError("Failed to compute GLD scores for prompts.")
 
-    tokenized: List[torch.Tensor] = []
-    for entry in scored_entries:
-        tokens = tokenizer(
-            entry["prompt"],
-            return_tensors="pt",
-            max_length=128,
-            truncation=True,
-        )["input_ids"]
-        tokenized.append(tokens.squeeze(0))
+    tokenized = [
+        tokenizer(entry["prompt"], return_tensors="pt", max_length=128, truncation=True)["input_ids"].squeeze(0)
+        for entry in scored_entries
+    ]
 
     activations_dict = collect_activations(model, tokenized, layer_indices=[layer], position="last")
     activations = activations_dict[layer]

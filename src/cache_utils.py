@@ -72,16 +72,7 @@ def load_cache(cache_dir: Path, cache_key: str, suffix: str = ".pkl") -> Optiona
         return None
 
 
-def cache_activations(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    activations: Dict[int, np.ndarray],
-    labels: np.ndarray,
-    position: str = "last",
-    use_cache: bool = True
-):
-    """Cache activations for linear probing."""
+def cache_activations(cache_dir: Path, model_name: str, dataset_name: str, activations: Dict[int, np.ndarray], labels: np.ndarray, position: str = "last", use_cache: bool = True) -> None:
     if not use_cache:
         return
     
@@ -92,13 +83,7 @@ def cache_activations(
     save_cache(cache_dir, cache_key, cache_data, suffix=".npz")
 
 
-def load_cached_activations(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    position: str = "last"
-) -> Optional[tuple]:
-    """Load cached activations and labels."""
+def load_cached_activations(cache_dir: Path, model_name: str, dataset_name: str, position: str = "last") -> Optional[tuple]:
     cache_key = get_cache_key(model_name, dataset_name, "linear_probing_activations", position=position)
     cached = load_cache(cache_dir, cache_key, suffix=".npz")
     
@@ -121,14 +106,7 @@ def load_cached_activations(
     return activations_dict, labels_array
 
 
-def cache_prepared_examples(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    prepared_examples: List[Dict[str, Any]],
-    use_cache: bool = True
-) -> Optional[List[Dict[str, Any]]]:
-    """Cache or load prepared examples for activation patching."""
+def cache_prepared_examples(cache_dir: Path, model_name: str, dataset_name: str, prepared_examples: List[Dict[str, Any]], use_cache: bool = True) -> Optional[List[Dict[str, Any]]]:
     if not use_cache:
         return None
     
@@ -144,24 +122,12 @@ def cache_prepared_examples(
     return None
 
 
-def load_cached_prepared_examples(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[List[Dict[str, Any]]]:
-    """Load cached prepared examples."""
+def load_cached_prepared_examples(cache_dir: Path, model_name: str, dataset_name: str) -> Optional[List[Dict[str, Any]]]:
     cache_key = get_cache_key(model_name, dataset_name, "activation_patching_examples")
     return load_cache(cache_dir, cache_key, suffix=".pkl")
 
 
-def cache_bias_scores(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    scores: Dict[str, float],
-    use_cache: bool = True
-) -> Optional[Dict[str, float]]:
-    """Cache or load bias scores."""
+def cache_bias_scores(cache_dir: Path, model_name: str, dataset_name: str, scores: Dict[str, float], use_cache: bool = True) -> Optional[Dict[str, float]]:
     if not use_cache:
         return None
     
@@ -177,24 +143,12 @@ def cache_bias_scores(
     return None
 
 
-def load_cached_bias_scores(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[Dict[str, float]]:
-    """Load cached bias scores."""
+def load_cached_bias_scores(cache_dir: Path, model_name: str, dataset_name: str) -> Optional[Dict[str, float]]:
     cache_key = get_cache_key(model_name, dataset_name, "bias_scores")
     return load_cache(cache_dir, cache_key, suffix=".json")
 
 
-def cache_attribution_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    attributions: Dict[str, float],
-    use_cache: bool = True
-) -> Optional[Dict[str, float]]:
-    """Cache or load attribution patching results."""
+def cache_attribution_results(cache_dir: Path, model_name: str, dataset_name: str, attributions: Dict[str, float], use_cache: bool = True) -> Optional[Dict[str, float]]:
     if not use_cache:
         return None
     
@@ -210,25 +164,12 @@ def cache_attribution_results(
     return None
 
 
-def load_cached_attribution_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[Dict[str, float]]:
-    """Load cached attribution patching results."""
+def load_cached_attribution_results(cache_dir: Path, model_name: str, dataset_name: str) -> Optional[Dict[str, float]]:
     cache_key = get_cache_key(model_name, dataset_name, "attribution_patching")
     return load_cache(cache_dir, cache_key, suffix=".json")
 
 
-def cache_ablation_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str,
-    head_impacts: Dict[Any, float],
-    mlp_impacts: Dict[int, float],
-    use_cache: bool = True
-) -> Optional[tuple]:
-    """Cache or load ablation results."""
+def cache_ablation_results(cache_dir: Path, model_name: str, dataset_name: str, head_impacts: Dict[Any, float], mlp_impacts: Dict[int, float], use_cache: bool = True) -> Optional[tuple]:
     if not use_cache:
         return None
     
@@ -248,12 +189,7 @@ def cache_ablation_results(
     return None
 
 
-def load_cached_ablation_results(
-    cache_dir: Path,
-    model_name: str,
-    dataset_name: str
-) -> Optional[tuple]:
-    """Load cached ablation results."""
+def load_cached_ablation_results(cache_dir: Path, model_name: str, dataset_name: str) -> Optional[tuple]:
     head_key = get_cache_key(model_name, dataset_name, "head_ablations")
     mlp_key = get_cache_key(model_name, dataset_name, "mlp_ablations")
     
@@ -264,4 +200,3 @@ def load_cached_ablation_results(
         return cached_heads, cached_mlps
     
     return None
-

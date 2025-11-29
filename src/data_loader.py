@@ -181,10 +181,7 @@ def build_stereoset_triplets(examples: List[Dict[str, Any]]) -> List[Dict[str, A
     return triplets
 
 
-def find_first_difference_tokens(
-    sentence_a: str,
-    sentence_b: str
-) -> Tuple[str, str]:
+def find_first_difference_tokens(sentence_a: str, sentence_b: str) -> Tuple[str, str]:
     """Return the first pair of differing word tokens across two sentences."""
     a_tokens = sentence_a.split()
     b_tokens = sentence_b.split()

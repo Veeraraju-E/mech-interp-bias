@@ -74,36 +74,28 @@ def analyze_top_latent_samples(
         output_dir = Path("results") / model_name / "sae_bias_suppression" / "latent_analysis"
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    # Load or compute activations
     if activations is None or sample_metadata is None:
         print("Collecting activations...")
-        activations, gld_scores, scored_entries = collect_activation_dataset(model=model, tokenizer=tokenizer, dataset_name=dataset_name, layer=layer)
-        sample_metadata = scored_entries
+        activations, _, sample_metadata = collect_activation_dataset(model, tokenizer, dataset_name, layer)
     else:
-        prompts = build_gender_prompts(dataset_name)
-        scored_entries = compute_gld_scores(model, tokenizer, prompts)
-        sample_metadata = scored_entries
+        sample_metadata = compute_gld_scores(model, tokenizer, build_gender_prompts(dataset_name))
     
-    # Identify biased prompts (male_prob > female_prob)
-    bias_mask = np.array([entry.get("male_prob", 0.0) > entry.get("female_prob", 0.0) for entry in sample_metadata])
+    bias_mask = np.array([e.get("male_prob", 0.0) > e.get("female_prob", 0.0) for e in sample_metadata])
     biased_activations = activations[bias_mask]
-    biased_metadata = [sample_metadata[i] for i in range(len(sample_metadata)) if bias_mask[i]]
-    
     print(f"Found {len(biased_activations)} biased prompts out of {len(activations)} total")
     
-    # Load or train SAE
     if sae_path and sae_path.exists():
         print(f"Loading SAE from {sae_path}...")
         sae_data = torch.load(sae_path, map_location=device)
+        sae = SparseAutoencoder(model.cfg.d_model, d_latent or model.cfg.d_model * 8, k_sparse, device)
         if isinstance(sae_data, dict) and "state_dict" in sae_data:
-            sae = SparseAutoencoder(d_model=model.cfg.d_model, d_latent=d_latent or model.cfg.d_model * 8, k_sparse=k_sparse, device=device)
             sae.load_state_dict(sae_data["state_dict"])
         elif isinstance(sae_data, SparseAutoencoder):
             sae = sae_data.to(device)
         sae.eval()
     else:
         print("Training SAE...")
-        sae, _ = train_sae(activations=activations, d_model=model.cfg.d_model, d_latent=d_latent or model.cfg.d_model * 8, k_sparse=k_sparse, device=device, epochs=1000)
+        sae, _ = train_sae(activations, model.cfg.d_model, d_latent or model.cfg.d_model * 8, k_sparse, device, epochs=1000)
         sae.eval()
     
     # Find top latents for biased prompts
@@ -114,24 +106,16 @@ def analyze_top_latent_samples(
     for latent_idx, mean_act in top_latent_list:
         print(f"  Latent {latent_idx}: mean activation = {mean_act:.6f}")
     
-    # For each top latent, find top samples
     results = {
-        "model": model_name,
-        "dataset": dataset_name,
-        "layer": layer,
-        "k_sparse": k_sparse,
-        "d_latent": d_latent or model.cfg.d_model * 8,
-        "top_latents": [],
+        "model": model_name, "dataset": dataset_name, "layer": layer, "k_sparse": k_sparse,
+        "d_latent": d_latent or model.cfg.d_model * 8, "top_latents": [],
     }
     
     print(f"\nFinding top {top_samples_per_latent} samples for each latent...")
     for latent_idx, mean_activation in tqdm(top_latent_list, desc="Analyzing latents"):
-        top_samples = find_top_samples_for_latent(sae=sae, activations=activations, sample_metadata=sample_metadata, latent_idx=latent_idx, top_k=top_samples_per_latent)
-        
         results["top_latents"].append({
-            "latent_index": latent_idx,
-            "mean_activation_on_biased": mean_activation,
-            "top_samples": top_samples,
+            "latent_index": latent_idx, "mean_activation_on_biased": mean_activation,
+            "top_samples": find_top_samples_for_latent(sae, activations, sample_metadata, latent_idx, top_samples_per_latent),
         })
     
     # Save results

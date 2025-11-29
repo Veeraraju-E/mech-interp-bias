@@ -19,14 +19,10 @@ def _load_subject_dataset(subject: str, split: str):
             return load_dataset(dataset_id, subject, split=split)
         except Exception as err:  # datasets raises several custom exceptions; keep message for debugging
             last_error = err
-    raise RuntimeError(
-        f"Unable to load MMLU subject '{subject}' from {MMLU_DATASET_IDS}: {last_error}"
-    )
+    raise RuntimeError(f"Unable to load MMLU subject '{subject}' from {MMLU_DATASET_IDS}: {last_error}")
 
 
-def load_mmlu_samples(
-    subjects: Sequence[str], *, split: str = "test", max_questions_per_subject: int = 25
-) -> List[Dict[str, str]]:
+def load_mmlu_samples(subjects: Sequence[str], split: str = "test", max_questions_per_subject: int = 25) -> List[Dict[str, str]]:
     """Load a small slice of MMLU questions for fast experimentation."""
     samples: List[Dict[str, str]] = []
     for subject in subjects:
@@ -51,36 +47,22 @@ def _format_prompt(question: str, choices: Sequence[str]) -> str:
     return f"{question.strip()}\n" + "\n".join(choice_lines) + "\nAnswer:"
 
 
-def _run_with_hooks(
-    model: HookedTransformer,
-    tokens: torch.Tensor,
-    steering_hooks: Optional[List[tuple]] = None,
-) -> torch.Tensor:
+def _run_with_hooks(model: HookedTransformer, tokens: torch.Tensor, steering_hooks: Optional[List[tuple]] = None) -> torch.Tensor:
     if steering_hooks:
         return model.run_with_hooks(tokens, fwd_hooks=steering_hooks)
     return model(tokens)
 
 
-def _choice_logprob(
-    logits: torch.Tensor,
-    tokens: torch.Tensor,
-    prompt_len: int,
-) -> float:
+def _choice_logprob(logits: torch.Tensor, tokens: torch.Tensor, prompt_len: int) -> float:
     """Compute log probability of the answer suffix."""
     log_probs = F.log_softmax(logits[:, :-1, :], dim=-1)
-    seq_len = tokens.shape[1]
-    total = 0.0
-    for idx in range(prompt_len, seq_len):
-        token_id = tokens[0, idx]
-        total += log_probs[0, idx - 1, token_id].item()
-    return total
+    return sum(log_probs[0, idx - 1, tokens[0, idx]].item() for idx in range(prompt_len, tokens.shape[1]))
 
 
 def evaluate_mmlu_accuracy(
     model: HookedTransformer,
     tokenizer: PreTrainedTokenizerBase,
     samples: Sequence[Dict[str, str]],
-    *,
     steering_hooks: Optional[List[tuple]] = None,
 ) -> Dict[str, object]:
     """Compute MMLU accuracy with optional steering hooks applied."""
@@ -106,14 +88,11 @@ def evaluate_mmlu_accuracy(
 
         pred_index = int(np.argmax(choice_scores))
         answer_value = example["answer"]
-        if isinstance(answer_value, int):
-            label = answer_value
-        elif isinstance(answer_value, str) and answer_value:
-            label = ord(answer_value.upper()[0]) - ord("A")
-        else:
+        label = answer_value if isinstance(answer_value, int) else (ord(answer_value.upper()[0]) - ord("A") if isinstance(answer_value, str) and answer_value else None)
+        if label is None:
             raise ValueError(f"Unrecognized answer format: {answer_value!r}")
+        
         subject = example["subject"]
-
         if subject not in subject_totals:
             subject_totals[subject] = {"correct": 0, "total": 0}
         subject_totals[subject]["total"] += 1
