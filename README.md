@@ -16,20 +16,21 @@ root/
 │   ├── cache_utils.py              # On-disk caching helpers (scores, activations, etc.)
 │   ├── data_loader.py              # Dataset normalization + prompt builders
 │   ├── model_setup.py              # HookedTransformer + tokenizer initialization
-│   ├── visualization.py            # Plot factory for summaries/heatmaps
 │   └── methods/
-│       ├── activation_patching/
+│       ├── patching/
 │       │   ├── ablations.py        # Head/MLP ablation scans
 │       │   ├── attribution_patching.py
-│       │   ├── experiments.py      # End-to-end activation patching pipeline
-│       │   └── hook_points.py
-│       └── linear_probing/
-│           └── probe.py            # Layer-wise logistic probes + CLI
+│       │   └── experiments.py      # End-to-end activation patching pipeline
+│       ├── linear_probing/
+│       │   └── probe.py            # Layer-wise logistic probes + CLI
+│       └── steering/
+│           ├── experiments.py      # SAE steering experiments
+│           ├── dataset.py           # Activation dataset collection
+│           ├── train_sae.py         # SAE training
+│           └── evaluation.py       # Bias reduction evaluation
 ├── runs/                           # Cache directories (created on demand)
 └── results/                        # JSON + figure outputs (per model)
 ```
-
-All experimental entry points live inside `src/methods`, which keeps datasets, metrics, and device utilities reusable across analyses.
 
 ---
 
@@ -63,7 +64,7 @@ This script fetches and normalizes:
 | StereoSet    | `data/stereoset_test.json`              | Uses validation split, retains bias type metadata |
 | WinoGender   | `data/winogender_test.json`             | Reconstructs templates, pronouns, and example IDs |
 
-Additional experiment code expects optional preprocessed ACDC pairs:
+Additional experiment code expects preprocessed ACDC pairs:
 
 ```
 data/stereoset_gender_acdc_pairs.json
@@ -74,41 +75,20 @@ These files should contain the `{"clean": {"tokens": [...], "metadata": {...}}, 
 
 ---
 
-## 4. Baseline Metrics
+## 4. Activation Patching Pipeline
 
-`src/bias_metrics.py` provides reproducible scores used across all methods:
-
-- `compute_stereoset_score`: log-probability gap between stereotype vs. antistereotype tokens.
-- `compute_winogender_score`: log-probability gap between male vs. female pronouns in paired templates.
-- `build_bias_metric_fn`: closure that maps logits + metadata → differentiable scalar; this powers attribution patching and ablation comparisons.
----
-
-## 5. Activation Patching Pipeline
-
-The main orchestration lives in `src/methods/activation_patching/experiments.py`. It:
-
-1. Loads the requested model + tokenizer (`--model {gpt2-medium,gpt2-large,gpt-neo-125M}`).
-2. Loads datasets + (optionally) cached baselines from `runs/activation_patching/cache`.
-3. Prepares prompts for each dataset (`StereoSet` race/gender ACDC pairs, `WinoGender` pronoun contexts).
-4. Builds a dataset-specific bias metric closure.
-5. Runs:
+The main orchestration lives in `src/methods/patching/experiments.py`. It runs:
    - **Attribution patching** (`attribution_patching.py`): gradient-based edge scoring with hook names such as `blocks.5.attn.hook_z`.
-   - **Head/MLP ablation scans** (`ablations.py`): zeroes each head or MLP output and measures Δbias.
-6. Persists JSON artifacts in `results/<model>/`.
+   - **Head/MLP ablation scans** (`ablations.py`): zeroes each head or MLP output and measures ΔB.
 
 ### Run it
 
 ```bash
-python -m src.methods.activation_patching.experiments \
+python -m src.methods.patching.experiments \
   --model gpt2-medium \
   --output-dir results \
   --cache-dir runs/activation_patching/cache
 ```
-
-Useful flags:
-- `--no-cache`: recompute everything (ignores disk cache).
-- `--output-dir`: change the root results directory (defaults to `results`).
-- `--cache-dir`: pick a different cache root.
 
 Outputs per dataset (`stereoset_race`, `stereoset_gender`, `winogender`):
 
@@ -133,22 +113,33 @@ python -m src.methods.linear_probing.probe \
   --position last
 ```
 
-Pipeline highlights:
-
-- Builds balanced biased/neutral prompts (`prepare_biased_neutral_pairs`) for each dataset.
-- Captures residual activations for every layer (including layer 0) via TransformerLens hooks.
-- Trains `sklearn` logistic regressions with an 80/20 split per layer.
-- Saves per-layer accuracy/AUC to `results/<model>/linear_probing_<dataset>.json` and an aggregated `linear_probing_summary.json`.
-- Caches activations in `.npz` files so subsequent runs avoid re-encoding prompts.
-
-Interpretation tip: higher probe accuracy at later layers usually signals that bias representations sharpen as the model processes the context, aligning with the hypotheses in `requirements.md`.
-
 ---
 
-## 7. Contributing / Extending
+## 7. SAE Steering Experiments
 
-- Add new datasets by extending `src/data_loader` (normalize JSON, supply prompt builders, wire metadata into `build_bias_metric_fn`).
-- To analyze additional model families, extend `model_setup.load_model` / `get_tokenizer` to include validated checkpoints.
-- When adding new experiments, keep caching + visualization hooks consistent so the reporting pipeline stays uniform.
+`src/methods/steering/experiments.py` implements Sparse Autoencoder (SAE) based bias suppression experiments. This method:
 
-For questions or reproducibility issues, open an issue with your environment details, the exact command, and relevant log excerpts.
+1. Trains SAEs on model activations to learn sparse latent representations
+2. Identifies bias-correlated latents through correlation analysis
+3. Suppresses identified latents to reduce bias while maintaining model performance
+4. Evaluates on bias metrics, perplexity, and MMLU accuracy
+
+### Run it
+
+```bash
+python -m src.methods.steering.experiments \
+  --model gpt2-medium \
+  --dataset stereoset_gender \
+  --layer 0 \
+  --k-sparse 64 \
+  --n-examples 2000 \
+  --output-dir results
+```
+
+Outputs:
+- `sae_bias_suppression_k<k>.json`: Results for each k-sparse value
+- `sae_bias_suppression_summary.json`: Aggregated summary
+- `activation_profiles/`: Activation profile data
+- `latent_profiles/`: Latent profile visualizations
+
+---
