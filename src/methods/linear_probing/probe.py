@@ -364,14 +364,14 @@ def train_layer_probes(
 
 @app.command()
 def main(
-    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use"),
+    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M, llama-3-8b"),
     no_cache: bool = typer.Option(False, "--no-cache", help="Disable caching and recompute everything"),
     cache_dir: str = typer.Option("runs/linear_probing/cache", "--cache-dir", help="Directory to store/load cached activations"),
     output_dir: str = typer.Option("results", "--output-dir", "-o", help="Directory to save results"),
     position: str = typer.Option("last", "--position", "-p", help="Position to extract activations from"),
 ):
     """Run linear probing experiments for both datasets."""
-    valid_models = ["gpt2-medium", "gpt2-large", "gpt-neo-125M"]
+    valid_models = ["gpt2-medium", "gpt2-large", "gpt-neo-125M", "llama-3-8b"]
     valid_positions = ["last", "mean"]
     
     if model not in valid_models:

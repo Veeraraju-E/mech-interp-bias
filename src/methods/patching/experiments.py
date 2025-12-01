@@ -272,7 +272,7 @@ def run_ablation_experiment(
 
 @app.command()
 def main(
-    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M"),
+    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M, llama-3-8b"),
     no_cache: bool = typer.Option(False, "--no-cache", help="Disable caching and recompute everything"),
     cache_dir: str = typer.Option("runs/activation_patching/cache", "--cache-dir", help="Directory to store/load cached components"),
     output_dir: str = typer.Option("results", "--output-dir", "-o", help="Directory to save results: results/<model>/activation_patching"),

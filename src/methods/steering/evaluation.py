@@ -80,4 +80,3 @@ def evaluate_perplexity(model: HookedTransformer, tokenizer, text_corpus: List[s
         "perplexity_baseline": ppl_base, "perplexity_suppressed": ppl_steered,
         "perplexity_increase": increase, "perplexity_increase_percent": (increase / (ppl_base + 1e-8)) * 100.0 if ppl_base != float("inf") else float("inf"),
     }
-

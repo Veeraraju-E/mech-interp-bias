@@ -236,11 +236,11 @@ def build_winogender_pairs(examples: List[Dict[str, Any]]) -> List[Dict[str, Any
 
 def prepare_prompts(examples: List[Dict[str, Any]], tokenizer, max_length: int = 128) -> List[torch.Tensor]:
     """
-    Tokenize prompts for GPT-2.
+    Tokenize prompts for language models.
     
     Args:
         examples: List of example dictionaries
-        tokenizer: GPT-2 tokenizer
+        tokenizer: Tokenizer (GPT-2, Llama, etc.)
         max_length: Maximum sequence length
     
     Returns:

@@ -1,13 +1,13 @@
 import torch
 import torch.nn.functional as F
-from typing import List, Dict, Any, Sequence
+from typing import List, Dict, Any, Sequence, Union
 from transformer_lens import HookedTransformer
-from transformers import GPT2Tokenizer
+from transformers import GPT2Tokenizer, PreTrainedTokenizerBase
 
 from .data_loader import *
 
 
-def compute_stereoset_score(model: HookedTransformer, examples: List[Dict[str, Any]], tokenizer: GPT2Tokenizer) -> float:
+def compute_stereoset_score(model: HookedTransformer, examples: List[Dict[str, Any]], tokenizer: Union[GPT2Tokenizer, PreTrainedTokenizerBase]) -> float:
     triplets = build_stereoset_triplets(examples)
     if not triplets:
         return 0.0
@@ -45,7 +45,7 @@ def compute_stereoset_score(model: HookedTransformer, examples: List[Dict[str, A
     return sum(scores) / len(scores) if scores else 0.0
 
 
-def compute_winogender_score(model: HookedTransformer, examples: List[Dict[str, Any]], tokenizer: GPT2Tokenizer) -> float:
+def compute_winogender_score(model: HookedTransformer, examples: List[Dict[str, Any]], tokenizer: Union[GPT2Tokenizer, PreTrainedTokenizerBase]) -> float:
     pairs = build_winogender_pairs(examples)
     if not pairs:
         return 0.0
@@ -113,7 +113,7 @@ def build_bias_metric_fn(dataset_name: str):
     return metric_fn
 
 
-def compute_bias_metric(model: HookedTransformer, examples: List[Dict[str, Any]], dataset_name: str, tokenizer: GPT2Tokenizer) -> float:
+def compute_bias_metric(model: HookedTransformer, examples: List[Dict[str, Any]], dataset_name: str, tokenizer: Union[GPT2Tokenizer, PreTrainedTokenizerBase]) -> float:
     if dataset_name.lower() == "stereoset":
         return compute_stereoset_score(model, examples, tokenizer)
     elif dataset_name.lower() == "winogender":
