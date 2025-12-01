@@ -5,7 +5,6 @@ import torch
 import numpy as np
 from typing import Dict, List, Tuple, Any, Optional
 from pathlib import Path
-from tqdm import tqdm
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, roc_auc_score
 from transformer_lens import HookedTransformer
@@ -13,7 +12,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, MofNCompleteColumn
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.model_setup import *
@@ -42,50 +41,65 @@ class ProbeResults:
         }
 
 
-def collect_activations(model: HookedTransformer, tokenized_prompts: List[torch.Tensor], layer_indices: Optional[List[int]] = None, position: str = "last") -> Dict[int, np.ndarray]:
+def collect_activations(model: HookedTransformer, tokenized_prompts: List[torch.Tensor], layer_indices: Optional[List[int]] = None, position: str = "last", console: Optional[Console] = None) -> Dict[int, np.ndarray]:
     """Collect residual stream activations at each layer."""
     
     if layer_indices is None:
         layer_indices = list(range(model.cfg.n_layers + 1))
     
+    if console is None:
+        console = Console()
+    
     activations = {layer: [] for layer in layer_indices}
     
-    for tokens in tqdm(tokenized_prompts, desc="Collecting activations"):
-        if tokens.dim() == 1:
-            tokens = tokens.unsqueeze(0)
-        tokens = tokens.to(model.cfg.device)
+    with Progress(
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        MofNCompleteColumn(),
+        console=console,
+        transient=False,
+        refresh_per_second=10
+    ) as progress:
+        task = progress.add_task("Collecting activations", total=len(tokenized_prompts))
         
-        saved_activations = {layer: None for layer in layer_indices}
-        
-        def save_activation(layer_idx: int):
-            def hook_fn(activation: torch.Tensor, hook):
-                saved_activations[layer_idx] = activation.detach().cpu()
-                return activation
-            return hook_fn
-        
-        hooks = []
-        for layer in layer_indices:
-            hook_name = "blocks.0.hook_resid_pre" if layer == 0 else f"blocks.{layer-1}.hook_resid_post"
-            hooks.append((hook_name, save_activation(layer)))
-        
-        with torch.no_grad():
-            model.run_with_hooks(tokens, fwd_hooks=hooks)
-        
-        for layer in layer_indices:
-            if saved_activations[layer] is not None:
-                layer_act = saved_activations[layer]
-                
-                if layer_act.dim() == 3:
-                    layer_act = layer_act[0]
-                
-                if position == "last":
-                    vec = layer_act[-1, :].numpy()
-                elif position == "mean":
-                    vec = layer_act.mean(dim=0).numpy()
-                else:
-                    raise ValueError(f"Invalid position: {position}")
-                
-                activations[layer].append(vec)
+        for tokens in tokenized_prompts:
+            if tokens.dim() == 1:
+                tokens = tokens.unsqueeze(0)
+            tokens = tokens.to(model.cfg.device)
+            
+            saved_activations = {layer: None for layer in layer_indices}
+            
+            def save_activation(layer_idx: int):
+                def hook_fn(activation: torch.Tensor, hook):
+                    saved_activations[layer_idx] = activation.detach().cpu()
+                    return activation
+                return hook_fn
+            
+            hooks = []
+            for layer in layer_indices:
+                hook_name = "blocks.0.hook_resid_pre" if layer == 0 else f"blocks.{layer-1}.hook_resid_post"
+                hooks.append((hook_name, save_activation(layer)))
+            
+            with torch.no_grad():
+                model.run_with_hooks(tokens, fwd_hooks=hooks)
+            
+            for layer in layer_indices:
+                if saved_activations[layer] is not None:
+                    layer_act = saved_activations[layer]
+                    
+                    if layer_act.dim() == 3:
+                        layer_act = layer_act[0]
+                    
+                    if position == "last":
+                        vec = layer_act[-1, :].numpy()
+                    elif position == "mean":
+                        vec = layer_act.mean(dim=0).numpy()
+                    else:
+                        raise ValueError(f"Invalid position: {position}")
+                    
+                    activations[layer].append(vec)
+            
+            progress.update(task, advance=1)
     
     for layer in layer_indices: # stack along first dimension: [n_examples, hidden_dim]
         activations[layer] = np.stack(activations[layer], axis=0) if activations[layer] else np.array([])
@@ -275,8 +289,7 @@ def train_layer_probes(
             tokens = tokenizer.encode(p, return_tensors="pt").squeeze(0)
             tokenized.append(tokens)
         
-        with console.status("[bold yellow]Collecting activations..."):
-            activations_dict = collect_activations(model, tokenized, layer_indices, position=position)
+        activations_dict = collect_activations(model, tokenized, layer_indices, position=position, console=console)
         
         if cache_dir and use_cache:
             cache_activations(cache_dir, model_name, dataset_name, activations_dict, labels, position, use_cache)
@@ -293,25 +306,26 @@ def train_layer_probes(
     results = ProbeResults()
     results.labels = labels
     
-    console.print("[cyan]Training probes for each layer...[/cyan]")
+    warnings = []
     with Progress(
-        SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         BarColumn(),
-        TaskProgressColumn(),
-        console=console
+        MofNCompleteColumn(),
+        console=console,
+        transient=False,
+        refresh_per_second=10
     ) as progress:
-        task = progress.add_task("Training probes...", total=len(layer_indices))
+        task = progress.add_task("Training probes", total=len(layer_indices))
         for layer in layer_indices:
             activation_vecs = activations_dict[layer]
             
             if len(activation_vecs) == 0:
-                console.print(f"[yellow]Warning:[/yellow] Layer {layer} has no activations")
+                warnings.append(f"Layer {layer} has no activations")
                 progress.update(task, advance=1)
                 continue
             
             if len(activation_vecs) != n_examples:
-                console.print(f"[yellow]Warning:[/yellow] Layer {layer} has {len(activation_vecs)} examples, expected {n_examples}")
+                warnings.append(f"Layer {layer} has {len(activation_vecs)} examples, expected {n_examples}")
                 progress.update(task, advance=1)
                 continue
             
@@ -323,6 +337,9 @@ def train_layer_probes(
             results.layer_accuracies[layer] = float(acc)
             results.layer_aucs[layer] = float(auc)
             progress.update(task, advance=1)
+    
+    for warning in warnings:
+        console.print(f"[yellow]Warning:[/yellow] {warning}")
     
     if output_dir:
         output_dir.mkdir(parents=True, exist_ok=True)

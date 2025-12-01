@@ -5,6 +5,7 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 import sys
 import os
+import torch
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -99,10 +100,30 @@ def prepare_dataset_inputs(
     """Dispatch to dataset-specific tokenization helpers."""
     if dataset_name == "stereoset":
         return _prepare_stereoset_examples(examples, tokenizer)
-    elif dataset_name == "stereoset_race":
-        return get_acdc_stereoset_pairs("race")
-    elif dataset_name == "stereoset_gender":
-        return get_acdc_stereoset_pairs("gender")
+    elif dataset_name in ["stereoset_race", "stereoset_gender"]:
+        acdc_pairs = get_acdc_stereoset_pairs("race" if dataset_name == "stereoset_race" else "gender")
+        prepared = []
+        for pair in acdc_pairs:
+            clean_entry = pair.get("clean", {})
+            corrupted_entry = pair.get("corrupted", {})
+            
+            if clean_entry and clean_entry.get("tokens"):
+                clean_tokens = torch.tensor(clean_entry["tokens"], dtype=torch.long)
+                clean_metadata = clean_entry.get("metadata", {})
+                prepared.append({
+                    "tokens": clean_tokens,
+                    "metadata": clean_metadata
+                })
+            
+            if corrupted_entry and corrupted_entry.get("tokens"):
+                corrupted_tokens = torch.tensor(corrupted_entry["tokens"], dtype=torch.long)
+                corrupted_metadata = corrupted_entry.get("metadata", {})
+                prepared.append({
+                    "tokens": corrupted_tokens,
+                    "metadata": corrupted_metadata
+                })
+        
+        return prepared
     elif dataset_name == "winogender":
         return _prepare_winogender_examples(examples, tokenizer)
     else:
