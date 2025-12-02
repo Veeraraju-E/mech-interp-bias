@@ -17,7 +17,7 @@ def _load_subject_dataset(subject: str, split: str):
     for dataset_id in MMLU_DATASET_IDS:
         try:
             return load_dataset(dataset_id, subject, split=split)
-        except Exception as err:  # datasets raises several custom exceptions; keep message for debugging
+        except Exception as err:
             last_error = err
     raise RuntimeError(f"Unable to load MMLU subject '{subject}' from {MMLU_DATASET_IDS}: {last_error}")
 
@@ -59,15 +59,7 @@ def _choice_logprob(logits: torch.Tensor, tokens: torch.Tensor, prompt_len: int)
     return sum(log_probs[0, idx - 1, tokens[0, idx]].item() for idx in range(prompt_len, tokens.shape[1]))
 
 
-def evaluate_mmlu_accuracy(
-    model: HookedTransformer,
-    tokenizer: PreTrainedTokenizerBase,
-    samples: Sequence[Dict[str, str]],
-    steering_hooks: Optional[List[tuple]] = None,
-) -> Dict[str, object]:
-    """Compute MMLU accuracy with optional steering hooks applied."""
-    if not samples:
-        return {"overall_accuracy": 0.0, "subject_accuracies": {}, "num_questions": 0}
+def evaluate_mmlu_accuracy(model: HookedTransformer, tokenizer: PreTrainedTokenizerBase, samples: Sequence[Dict[str, str]], steering_hooks: Optional[List[tuple]] = None) -> Dict[str, object]:
 
     device = model.cfg.device
     subject_totals: Dict[str, Dict[str, int]] = {}
@@ -111,4 +103,3 @@ def evaluate_mmlu_accuracy(
         "subject_accuracies": subject_accuracies,
         "num_questions": total_questions,
     }
-

@@ -181,7 +181,7 @@ def run_experiment(
 
 @app.command()
 def main(
-    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M, llama-3-8b"),
+    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M, llama-3.2-1b"),
     dataset: str = typer.Option("stereoset_gender", "--dataset", "-d", help="Dataset name"),
     layer: int = typer.Option(0, "--layer", "-l", help="Layer index"),
     d_latent: Optional[int] = typer.Option(None, "--d-latent", help="Latent dimension"),

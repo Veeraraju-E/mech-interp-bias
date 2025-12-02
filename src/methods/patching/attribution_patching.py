@@ -59,7 +59,7 @@ def attribution_patch(model: HookedTransformer, examples: List[Dict[str, Any]], 
             if bias_score.grad_fn is None:
                 continue
         
-        if bias_score.requires_grad and bias_score.grad_fn is not None:
+        if bias_score.requires_grad and bias_score.grad_fn:
             bias_score.backward(retain_graph=False)
         else:
             continue
@@ -67,7 +67,7 @@ def attribution_patch(model: HookedTransformer, examples: List[Dict[str, Any]], 
         for hook_name in hook_points:
             if hook_name in activations:
                 activation = activations[hook_name]
-                if activation.grad is not None:
+                if activation.grad:
                     if activation.dim() == 3:
                         seq_len = activation.shape[1]
                         pos = max(0, min(seq_len - 1, logit_position))

@@ -272,7 +272,7 @@ def run_ablation_experiment(
 
 @app.command()
 def main(
-    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M, llama-3-8b"),
+    model: str = typer.Option("gpt2-medium", "--model", "-m", help="Model to use: gpt2-medium, gpt2-large, gpt-neo-125M, llama-3.2-1b"),
     no_cache: bool = typer.Option(False, "--no-cache", help="Disable caching and recompute everything"),
     cache_dir: str = typer.Option("runs/activation_patching/cache", "--cache-dir", help="Directory to store/load cached components"),
     output_dir: str = typer.Option("results", "--output-dir", "-o", help="Directory to save results: results/<model>/activation_patching"),
@@ -377,15 +377,9 @@ def main(
         
         bias_metric_fn = build_bias_metric_fn("stereoset" if "stereoset" in dataset_name else dataset_name)
         
-        attribution_results = run_attribution_patching_experiment(
-            model_obj, dataset_name, prepared_examples, bias_metric_fn, output_path,
-            cache_dir=cache_path, use_cache=use_cache
-        )
+        attribution_results = run_attribution_patching_experiment(model_obj, dataset_name, prepared_examples, bias_metric_fn, output_path, cache_dir=cache_path, use_cache=use_cache)
         
-        ablation_results = run_ablation_experiment(
-            model_obj, dataset_name, prepared_examples, bias_metric_fn, output_path,
-            cache_dir=cache_path, use_cache=use_cache
-        )
+        ablation_results = run_ablation_experiment(model_obj, dataset_name, prepared_examples, bias_metric_fn, output_path, cache_dir=cache_path, use_cache=use_cache)
         
         baseline = baseline_scores.get(dataset_name, 0.0)
         all_results[dataset_name] = {
@@ -406,4 +400,3 @@ def main(
 
 if __name__ == "__main__":
     app()
-
