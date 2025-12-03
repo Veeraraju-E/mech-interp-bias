@@ -276,9 +276,23 @@ def main(
     no_cache: bool = typer.Option(False, "--no-cache", help="Disable caching and recompute everything"),
     cache_dir: str = typer.Option("runs/activation_patching/cache", "--cache-dir", help="Directory to store/load cached components"),
     output_dir: str = typer.Option("results", "--output-dir", "-o", help="Directory to save results: results/<model>/activation_patching"),
+    datasets: List[str] = typer.Option(["stereoset_race", "stereoset_gender", "winogender"], "--datasets", "-d", help="List of datasets to run experiments on. Options: stereoset_race, stereoset_gender, winogender"),
 ):
     """Main experiment orchestration for activation patching."""
     console.print(Panel.fit("[bold cyan]Activation Patching Experiments[/bold cyan]", style="bold blue"))
+    
+    # Validate datasets
+    valid_datasets = {"stereoset_race", "stereoset_gender", "winogender"}
+    datasets_set = set(datasets)
+    invalid_datasets = datasets_set - valid_datasets
+    if invalid_datasets:
+        console.print(f"[red]Error:[/red] Invalid dataset(s): {', '.join(invalid_datasets)}")
+        console.print(f"[yellow]Valid datasets:[/yellow] {', '.join(sorted(valid_datasets))}")
+        raise typer.Exit(1)
+    
+    if not datasets_set:
+        console.print("[red]Error:[/red] At least one dataset must be specified")
+        raise typer.Exit(1)
     
     device = setup_device()
     with console.status("[bold yellow]Loading model..."):
@@ -297,6 +311,7 @@ def main(
     table.add_column("Parameter", style="cyan")
     table.add_column("Value", style="green")
     table.add_row("Model", model)
+    table.add_row("Datasets", ", ".join(sorted(datasets_set)))
     table.add_row("Output Dir", str(output_path))
     table.add_row("Cache", "Enabled" if use_cache else "Disabled")
     if cache_path:
@@ -305,18 +320,26 @@ def main(
     console.print()
     
     with console.status("[bold yellow]Loading datasets..."):
-        stereoset_examples = load_stereoset()
-        winogender_examples = load_winogender()
-    
-    console.print(f"[green]✓[/green] Loaded {len(stereoset_examples)} StereoSet examples")
-    console.print(f"[green]✓[/green] Loaded {len(winogender_examples)} WinoGender examples")
+        stereoset_examples = []
+        if "stereoset_race" in datasets_set or "stereoset_gender" in datasets_set:
+            stereoset_examples = load_stereoset()
+            console.print(f"[green]✓[/green] Loaded {len(stereoset_examples)} StereoSet examples")
+        
+        winogender_examples = []
+        if "winogender" in datasets_set:
+            winogender_examples = load_winogender()
+            console.print(f"[green]✓[/green] Loaded {len(winogender_examples)} WinoGender examples")
     console.print()
     
     console.print("[cyan]Computing baseline bias metrics...[/cyan]")
     baseline_scores = {}
     
+    # Only compute baselines for selected datasets
     for bias_type in ["race", "gender"]:
         dataset_name = f"stereoset_{bias_type}"
+        if dataset_name not in datasets_set:
+            continue
+            
         filtered_examples = [ex for ex in stereoset_examples if ex.get("bias_type", "").lower() == bias_type]
         
         if cache_path and use_cache:
@@ -337,22 +360,30 @@ def main(
                 baseline_scores[dataset_name] = 0.0
                 console.print(f"[yellow]Warning:[/yellow] No examples found for {dataset_name}, setting baseline to 0.0")
     
-    dataset_name = "winogender"
-    if cache_path and use_cache:
-        cached_scores = load_cached_bias_scores(cache_path, model_name, dataset_name)
-        if cached_scores is not None:
-            baseline_scores[dataset_name] = cached_scores.get("baseline", None)
-            console.print(f"[green]✓[/green] Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
-    
-    if dataset_name not in baseline_scores or baseline_scores[dataset_name] is None:
-        baseline = compute_bias_metric(model_obj, winogender_examples, dataset_name, tokenizer)
-        baseline_scores[dataset_name] = baseline
-        console.print(f"[cyan]{dataset_name.capitalize()}[/cyan] baseline bias: [bold]{baseline:.4f}[/bold]")
-        
+    if "winogender" in datasets_set:
+        dataset_name = "winogender"
         if cache_path and use_cache:
-            cache_bias_scores(cache_path, model_name, dataset_name, {"baseline": baseline}, use_cache)
+            cached_scores = load_cached_bias_scores(cache_path, model_name, dataset_name)
+            if cached_scores is not None:
+                baseline_scores[dataset_name] = cached_scores.get("baseline", None)
+                console.print(f"[green]✓[/green] Loaded cached baseline for {dataset_name}: {baseline_scores[dataset_name]:.4f}")
+        
+        if dataset_name not in baseline_scores or baseline_scores[dataset_name] is None:
+            baseline = compute_bias_metric(model_obj, winogender_examples, dataset_name, tokenizer)
+            baseline_scores[dataset_name] = baseline
+            console.print(f"[cyan]{dataset_name.capitalize()}[/cyan] baseline bias: [bold]{baseline:.4f}[/bold]")
+            
+            if cache_path and use_cache:
+                cache_bias_scores(cache_path, model_name, dataset_name, {"baseline": baseline}, use_cache)
     
-    datasets = [("stereoset_race", None), ("stereoset_gender", None), ("winogender", winogender_examples)]
+    # Build dataset list based on selected datasets
+    datasets = []
+    if "stereoset_race" in datasets_set:
+        datasets.append(("stereoset_race", None))
+    if "stereoset_gender" in datasets_set:
+        datasets.append(("stereoset_gender", None))
+    if "winogender" in datasets_set:
+        datasets.append(("winogender", winogender_examples))
     
     all_results = {}
     

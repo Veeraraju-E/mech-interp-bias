@@ -74,12 +74,6 @@ def _normalize_stereoset_example(raw_item: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def load_stereoset(data_dir: Path = None) -> List[Dict[str, Any]]:
-    """
-    Load StereoSet dataset from local JSON file (Nadeem et al., 2021).
-    
-    Returns normalized entries that retain bias type metadata so we can
-    analyze gender, profession, religion, and nationality biases separately.
-    """
     if data_dir is None:
         data_dir = Path("data")
     else:
@@ -88,10 +82,7 @@ def load_stereoset(data_dir: Path = None) -> List[Dict[str, Any]]:
     stereoset_file = data_dir / "stereoset_test.json"
     
     if not stereoset_file.exists():
-        raise FileNotFoundError(
-            f"StereoSet dataset not found at {stereoset_file}. "
-            "Please run download_datasets.py first."
-        )
+        raise FileNotFoundError(f"StereoSet dataset not found at {stereoset_file}. Please run download_datasets.py first.")
     
     with open(stereoset_file, "r") as f:
         data = json.load(f)
@@ -100,16 +91,6 @@ def load_stereoset(data_dir: Path = None) -> List[Dict[str, Any]]:
 
 
 def load_winogender(data_dir: Path = None) -> List[Dict[str, Any]]:
-    """
-    Load WinoGender dataset from local JSON file.
-    
-    Args:
-        data_dir: Directory containing the dataset file (default: ./data)
-    
-    Returns:
-        List of examples with all fields preserved from JSON:
-        {sentence, profession, pronoun, answer, word, template, example_id,...}
-    """
     if data_dir is None:
         data_dir = Path("data")
     else:
@@ -118,10 +99,7 @@ def load_winogender(data_dir: Path = None) -> List[Dict[str, Any]]:
     winogender_file = data_dir / "winogender_test.json"
     
     if not winogender_file.exists():
-        raise FileNotFoundError(
-            f"WinoGender dataset not found at {winogender_file}. "
-            "Please run download_datasets.py first."
-        )
+        raise FileNotFoundError(f"WinoGender dataset not found at {winogender_file}. Please run download_datasets.py first.")
     
     with open(winogender_file, "r") as f:
         examples = json.load(f)
@@ -190,10 +168,9 @@ def find_first_difference_tokens(sentence_a: str, sentence_b: str) -> Tuple[str,
         if a_tok != b_tok:
             return _strip_punctuation(a_tok), _strip_punctuation(b_tok)
     
-    # Fallback to last token if sentences differ only by length
     if a_tokens and b_tokens:
+        print("Using last token to find first difference")
         return _strip_punctuation(a_tokens[-1]), _strip_punctuation(b_tokens[-1])
-    return "", ""
 
 
 def build_winogender_pairs(examples: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -255,28 +232,11 @@ def prepare_prompts(examples: List[Dict[str, Any]], tokenizer, max_length: int =
             # For WinoGender, use sentence
             text = example["sentence"]
         
-        encoded = tokenizer(
-            text,
-            return_tensors="pt",
-            max_length=max_length,
-            truncation=True,
-            padding="max_length"
-        )
+        encoded = tokenizer(text, return_tensors="pt", max_length=max_length, truncation=True, padding="max_length")
         tokenized.append(encoded["input_ids"].squeeze(0))
-    
     return tokenized
 
-
 def get_stereoset_pairs(examples: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """
-    Group StereoSet examples into stereotype/antistereotype pairs.
-    
-    Args:
-        examples: List of StereoSet examples
-    
-    Returns:
-        List of pairs enriched with bias metadata.
-    """
     pairs = []
     for triplet in build_stereoset_triplets(examples):
         pair = {
@@ -317,18 +277,12 @@ def load_acdc_pairs(dataset_type: str, data_dir: Path = None) -> List[Dict[str, 
     }
     
     if dataset_type not in file_map:
-        raise ValueError(
-            f"Unknown dataset_type: {dataset_type}. "
-            f"Must be one of {list(file_map.keys())}"
-        )
+        raise ValueError(f"Unknown dataset_type: {dataset_type}. Must be one of {list(file_map.keys())}")
     
     file_path = data_dir / file_map[dataset_type]
     
     if not file_path.exists():
-        raise FileNotFoundError(
-            f"ACDC pairs file not found at {file_path}. "
-            f"Please ensure the file exists in the data directory."
-        )
+        raise FileNotFoundError(f"ACDC pairs file not found at {file_path}. Please ensure the file exists in the data directory.")
     
     with open(file_path, "r") as f:
         pairs = json.load(f)
@@ -337,28 +291,9 @@ def load_acdc_pairs(dataset_type: str, data_dir: Path = None) -> List[Dict[str, 
 
 
 def get_acdc_stereoset_pairs(bias_type: str = "gender", data_dir: Path = None) -> List[Dict[str, Any]]:
-    """
-    Get ACDC-formatted StereoSet pairs for a specific bias type.
-    
-    Args:
-        bias_type: Either "gender" or "race"
-        data_dir: Directory containing the ACDC pair files
-    
-    Returns:
-        List of clean/corrupted pairs for probing and interventions
-    """
     dataset_type = f"stereoset_{bias_type}"
     return load_acdc_pairs(dataset_type, data_dir)
 
 
 def get_acdc_winogender_pairs(data_dir: Path = None) -> List[Dict[str, Any]]:
-    """
-    Get ACDC-formatted WinoGender pairs.
-    
-    Args:
-        data_dir: Directory containing the ACDC pair files
-    
-    Returns:
-        List of clean/corrupted pairs with male/female pronoun swaps
-    """
     return load_acdc_pairs("winogender", data_dir)

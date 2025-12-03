@@ -40,7 +40,7 @@ def attribution_patch(model: HookedTransformer, examples: List[Dict[str, Any]], 
                 logit_position = tokens.shape[1] - 1
             else:
                 logit_position = tokens.shape[0] - 1
-            print(f"Using last logit position since unspecified: {logit_position}")
+            # print(f"Using last logit position since unspecified: {logit_position}")
         
         activations = {}
         hooks = [(hook_name, save_activation(hook_name, activations)) for hook_name in hook_points]
@@ -67,7 +67,7 @@ def attribution_patch(model: HookedTransformer, examples: List[Dict[str, Any]], 
         for hook_name in hook_points:
             if hook_name in activations:
                 activation = activations[hook_name]
-                if activation.grad:
+                if activation.grad is not None:
                     if activation.dim() == 3:
                         seq_len = activation.shape[1]
                         pos = max(0, min(seq_len - 1, logit_position))

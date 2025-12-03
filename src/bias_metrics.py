@@ -76,12 +76,44 @@ def compute_winogender_score(model: HookedTransformer, examples: List[Dict[str, 
     return sum(scores) / len(scores) if scores else 0.0
 
 
+def _normalize_token_ids(token_ids: Any) -> List[int]:
+    """Convert token_ids to a list, handling both lists and tensors."""
+    if token_ids is None:
+        return []
+    if isinstance(token_ids, torch.Tensor):
+        if token_ids.numel() == 0:
+            return []
+        # Detach and move to CPU to avoid any gradient/device issues
+        return token_ids.detach().cpu().tolist()
+    if isinstance(token_ids, (list, tuple)):
+        # Ensure all elements are integers
+        try:
+            return [int(x) for x in token_ids]
+        except (ValueError, TypeError):
+            return []
+    # Try to convert other types (e.g., numpy arrays)
+    try:
+        return [int(x) for x in token_ids]
+    except (ValueError, TypeError):
+        return []
+
+
 def _logprob_difference(log_probs: torch.Tensor, positive_ids: Sequence[int], negative_ids: Sequence[int]) -> torch.Tensor:
-    if not positive_ids or not negative_ids:
-        return torch.tensor(0.0, device=log_probs.device, requires_grad=True)
+    # Normalize to lists first to avoid any tensor boolean issues
+    pos_list = _normalize_token_ids(positive_ids)
+    neg_list = _normalize_token_ids(negative_ids)
     
-    pos = torch.tensor(positive_ids, device=log_probs.device, dtype=torch.long)
-    neg = torch.tensor(negative_ids, device=log_probs.device, dtype=torch.long)
+    if not isinstance(pos_list, list):
+        pos_list = list(pos_list)
+    if not isinstance(neg_list, list):
+        neg_list = list(neg_list)
+    
+    if len(pos_list) == 0 or len(neg_list) == 0:
+        raise ValueError("Positive or negative IDs are empty")
+    
+    pos = torch.tensor(pos_list, device=log_probs.device, dtype=torch.long)
+    neg = torch.tensor(neg_list, device=log_probs.device, dtype=torch.long)
+    
     pos_lp = torch.logsumexp(log_probs.index_select(0, pos), dim=0)
     neg_lp = torch.logsumexp(log_probs.index_select(0, neg), dim=0)
     return pos_lp - neg_lp
